@@ -1,14 +1,16 @@
-package adsim.form;
+package adsim.form.view;
 
 import javax.swing.JPanel;
 
+import adsim.core.Field;
+
 public class FieldView extends JPanel {
 
-	/**
-	 * Create the panel.
-	 */
-	public FieldView() {
-
+	private Field model;
+	
+	public FieldView(Field model) {
+		this.model = model;
 	}
 
+	
 }

@@ -1,4 +1,4 @@
-package adsim.form;
+package adsim.form.view;
 
 import javax.swing.JPanel;
 

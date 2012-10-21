@@ -1,4 +1,4 @@
-package adsim.model;
+package adsim.core;
 
 public enum WorkerState {
 	Ready, Running, Completed, Failed;

@@ -1,8 +1,8 @@
-package adsim.form;
+package adsim.form.view;
 
 import javax.swing.JPanel;
 
-import adsim.ISimulator;
+import adsim.core.ISimulator;
 
 import java.awt.BorderLayout;
 import lombok.*;
@@ -16,7 +16,8 @@ public class SimView extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public SimView() {
+	public SimView(ISimulator model) {
+		this.model = model;
 		setLayout(new BorderLayout(0, 0));
 		
 		SimController simController = new SimController();
@@ -25,7 +26,7 @@ public class SimView extends JPanel {
 		SimInfoView simInfoView = new SimInfoView();
 		add(simInfoView, BorderLayout.SOUTH);
 		
-		FieldView fieldView = new FieldView();
+		FieldView fieldView = new FieldView(null);
 		add(fieldView, BorderLayout.CENTER);
 
 	}

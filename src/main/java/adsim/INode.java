@@ -1,7 +1,14 @@
 package adsim;
 
+import java.util.Queue;
+
+import adsim.core.INodeController;
+
 public interface INode {
 	Vector getPosition();
 	double getRadioPower();
-	void receive(IPacket packet);
+	void pushPacket(IPacket packet);
+	Queue<IPacket> getSendQueue();
+	void next();
+	void addController(INodeController controller);
 }
