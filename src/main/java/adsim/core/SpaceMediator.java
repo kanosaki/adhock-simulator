@@ -1,6 +1,7 @@
 package adsim.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import adsim.*;
 import lombok.*;
@@ -19,7 +20,7 @@ public class SpaceMediator {
 
 	}
 
-	private ArrayList<INode> getNodes() {
+	private List<INode> getNodes() {
 		return this.field.getNodes();
 	}
 

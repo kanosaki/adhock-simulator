@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import adsim.INode;
 import adsim.IPacket;
-import adsim.Vector;
 import adsim.core.INodeController;
+import adsim.misc.Vector;
 
 public class Node implements INode {
 	private ArrayList<INodeController> controllers;
@@ -51,16 +51,8 @@ public class Node implements INode {
 	}
 
 	private ArrayList<INodeController> getControllers() {
-		if(this.addingController.isEmpty()) return this.controllers;
-		val newcontrollers = new ArrayList<INodeController>(this.controllers);
-		newcontrollers.addAll(this.addingController);
-		this.addingController.clear();
-		return newcontrollers;
+		return this.controllers;
 	}
 
-	@Override
-	public void addController(INodeController controller) {
-		this.addingController.add(controller);
-	}
 
 }

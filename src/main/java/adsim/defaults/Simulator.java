@@ -4,21 +4,29 @@ import lombok.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import adsim.core.Field;
+import adsim.core.IField;
 import adsim.core.IScenario;
 import adsim.core.ISession;
 import adsim.core.ISimulator;
 import adsim.core.SessionFinishedException;
 
+/**
+ * ISimulator implementation.
+ * 
+ */
 public class Simulator implements ISimulator {
 	private ISession session;
 	private IScenario scenario;
+	@Getter
+	private IField field;
 	private boolean isStopInvoked;
 	private Engine engine;
 	private static final int MAX_STEPS = 100;
 
 	public Simulator() {
 		this.isStopInvoked = false;
-		this.engine = new Engine();
+
 	}
 
 	public void stop() {
@@ -27,28 +35,41 @@ public class Simulator implements ISimulator {
 
 	@Override
 	public void start(IScenario scenario) {
+		if (this.isStopInvoked)
+			throw new IllegalStateException("This simulator already closed.");
 		this.scenario = scenario;
-		this.session = new Session(scenario);
+		this.init();
 		this.engine.start();
+	}
+
+	private void init() {
+		this.session = new Session(scenario);
+		this.field = new Field(this.session);
+		this.engine = new Engine();
 	}
 
 	class Engine implements Runnable {
 		int step;
 
 		public void start() {
-			val exec_srv = Executors.newCachedThreadPool();
-			exec_srv.execute(this);
+			val threadpool = Executors.newCachedThreadPool();
+			threadpool.execute(this);
 		}
 
 		@Override
 		public void run() {
-			try{
-				while (!isStopInvoked && step < MAX_STEPS) {
+			try {
+
+				while (!isStopInvoked) {
+					// Guard for debugging
+					// TODO Remove this break
+					if (step > MAX_STEPS)
+						break;
 					session.next();
 					step += 1;
-				}	
-			} catch(SessionFinishedException sfe){
-				
+				}
+			} catch (SessionFinishedException sfe) {
+
 			}
 		}
 	}

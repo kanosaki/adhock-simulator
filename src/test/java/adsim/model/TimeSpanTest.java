@@ -9,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import adsim.TimeSpan;
+import adsim.misc.TimeSpan;
 
 public class TimeSpanTest {
 

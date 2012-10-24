@@ -1,6 +1,7 @@
 package adsim.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.*;
 
@@ -10,7 +11,7 @@ public abstract class SessionBase implements ISession {
 	private final ArrayList<INode> nodes;
 	private IScenario scenario;
 
-	ArrayList<INode> getNodesRef() {
+	public List<INode> getNodes() {
 		return this.nodes;
 	}
 
@@ -25,6 +26,7 @@ public abstract class SessionBase implements ISession {
 		this.scenario = scenario;
 		this.nodes = new ArrayList<INode>();
 		this.field = new Field(this);
+		scenario.init(this);
 	}
 
 	/*
@@ -60,10 +62,4 @@ public abstract class SessionBase implements ISession {
 	public void reset() {
 
 	}
-
-	@Override
-	public void init() {
-		this.scenario.init(this);
-	}
-
 }

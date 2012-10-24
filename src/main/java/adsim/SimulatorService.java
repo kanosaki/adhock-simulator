@@ -25,9 +25,10 @@ public class SimulatorService {
 		this.sim = this.createSimulator();
 	}
 
-	public static SimulatorService create(IScenario scenario) {
+	public static SimulatorService start(IScenario scenario) {
 		val simsrv = new SimulatorService();
 		simsrv.addScenario(scenario);
+		simsrv.start();
 		return simsrv;
 	}
 

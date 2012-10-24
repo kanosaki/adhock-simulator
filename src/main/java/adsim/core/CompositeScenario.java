@@ -8,6 +8,9 @@ import adsim.INode;
 public class CompositeScenario implements IScenario {
 	@Setter
 	private Iterable<INode> nodes;
+	
+	@Getter @Setter
+	private String name;
 
 	public Iterable<INode> getNodes() {
 		if (this.nodes == null)
@@ -23,20 +26,10 @@ public class CompositeScenario implements IScenario {
 		}
 	}
 
+	/**
+	 * Override this method to configure initial nodes.
+	 */
 	public Iterable<INode> createNodes() {
 		return new ArrayList<INode>();
 	}
-
-	@Override
-	public void beforeStep() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void afterStep() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

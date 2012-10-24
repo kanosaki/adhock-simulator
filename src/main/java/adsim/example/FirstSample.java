@@ -1,5 +1,6 @@
 package adsim.example;
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,13 +15,15 @@ import adsim.core.ISession;
 import adsim.defaults.Node;
 
 public class FirstSample extends CompositeScenario {
-	ISession session;
-
 	public static void main(String[] args) {
-		val simsrv = SimulatorService.create(new FirstSample());
-		val win = simsrv.getWindow();
-		win.setVisible(true);
-		simsrv.start();
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				val simsrv = SimulatorService.start(new FirstSample());
+				val win = simsrv.getWindow();
+				win.setVisible(true);
+			}
+		});
 	}
 
 	@Override
