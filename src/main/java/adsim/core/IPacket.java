@@ -1,4 +1,4 @@
-package adsim;
+package adsim.core;
 
 public interface IPacket {
 

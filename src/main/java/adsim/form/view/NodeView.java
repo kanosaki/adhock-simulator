@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.JComponent;
 
-import adsim.INode;
+import adsim.core.INode;
 
 public class NodeView extends JComponent {
 	private INode model;

@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.*;
 
-import adsim.INode;
 
 public abstract class SessionBase implements ISession {
 	private final ArrayList<INode> nodes;

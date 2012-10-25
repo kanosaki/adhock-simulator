@@ -1,10 +1,12 @@
-package adsim;
+package adsim.core;
 
 import java.util.Queue;
 
-import adsim.core.INodeController;
 import adsim.misc.Vector;
 
+/**
+ * Logical model for Node
+ */
 public interface INode {
     Vector getPosition();
 
