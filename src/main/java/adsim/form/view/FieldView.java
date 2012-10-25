@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import adsim.core.Field;
 import adsim.core.IField;
+import adsim.misc.GraphicsAdapter;
 
 public class FieldView extends JPanel {
 
@@ -28,8 +29,9 @@ public class FieldView extends JPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    protected void paintComponent(Graphics gc) {
+    	super.paintComponent(gc);
+    	val g = GraphicsAdapter.create(gc);
         for (val node : this.model.getNodes()) {
             val pos = node.getPosition();
             val r = (node.getRadioPower() / 2) * zoom;

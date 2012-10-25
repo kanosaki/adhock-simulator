@@ -30,7 +30,6 @@ public class GraphicsAdapter {
     }
 
     public void drawOval(double x, double y, double width, double height) {
-        
     }
 
 }
