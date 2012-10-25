@@ -3,7 +3,6 @@ package adsim.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import adsim.INode;
 import adsim.misc.Vector;
 import lombok.*;
 

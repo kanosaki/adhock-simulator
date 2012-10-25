@@ -2,7 +2,6 @@ package adsim.core;
 
 import java.util.List;
 
-import adsim.INode;
 
 public interface ISession {
 

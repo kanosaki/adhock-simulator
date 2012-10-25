@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
-import adsim.INode;
+import adsim.core.INode;
 import adsim.core.INodeController;
 import adsim.misc.Vector;
 

@@ -3,7 +3,6 @@ package adsim.core;
 import lombok.*;
 import java.util.ArrayList;
 
-import adsim.INode;
 
 public class CompositeScenario implements IScenario {
 	@Setter

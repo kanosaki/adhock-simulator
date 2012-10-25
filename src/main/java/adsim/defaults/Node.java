@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import adsim.INode;
-import adsim.IPacket;
+import adsim.core.INode;
 import adsim.core.INodeController;
+import adsim.core.IPacket;
 import adsim.misc.Vector;
 
 public class Node implements INode {
