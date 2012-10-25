@@ -36,5 +36,10 @@
   		<artifactId>xstream</artifactId>
   		<version>1.4.3</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.jruby</groupId>
+  		<artifactId>jruby</artifactId>
+  		<version>1.7.0.preview2</version>
+  	</dependency>
   </dependencies>
 </project>
