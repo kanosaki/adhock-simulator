@@ -6,13 +6,22 @@ import adsim.core.INodeController;
 import adsim.misc.Vector;
 
 public interface INode {
-	Vector getPosition();
+    Vector getPosition();
 
-	double getRadioPower();
+    void setPosition(Vector pos);
 
-	void pushPacket(IPacket packet);
+    double getRadioPower();
 
-	Queue<IPacket> getSendQueue();
+    void setRadioPower(double radioPower);
 
-	void next();
+    void pushPacket(IPacket packet);
+
+    Queue<IPacket> getSendQueue();
+
+    void next();
+
+    void addController(INodeController nc);
+    
+    INode clone();
+
 }

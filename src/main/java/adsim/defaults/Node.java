@@ -12,47 +12,65 @@ import adsim.core.INodeController;
 import adsim.misc.Vector;
 
 public class Node implements INode {
-	private ArrayList<INodeController> controllers;
-	private final Queue<INodeController> addingController;
-	private Queue<IPacket> sendQueue;
+    private static final double INITIAL_RADIO_POWER = 1.0;
+    private ArrayList<INodeController> controllers;
+    private Queue<IPacket> sendQueue;
 
-	public Node() {
-		this.controllers = new ArrayList<INodeController>();
-		this.sendQueue = new ConcurrentLinkedQueue<IPacket>();
-		this.addingController = new ConcurrentLinkedQueue<INodeController>();
-	}
+    @Getter
+    @Setter
+    private double radioPower;
 
-	@Override
-	public Vector getPosition() {
-		return Vector.zero;
-	}
+    @Getter
+    @Setter
+    private Vector position;
 
-	@Override
-	public double getRadioPower() {
-		return 10;
-	}
+    public Node() {
+        this(INITIAL_RADIO_POWER, Vector.zero, new ArrayList<INodeController>());
+    }
 
-	@Override
-	public void pushPacket(IPacket packet) {
-		// TODO Auto-generated method stub
+    /**
+     * Copy constructor
+     */
+    private Node(double radio, Vector pos, ArrayList<INodeController> controllers) {
+        this.radioPower = radio;
+        this.position = pos;
+        this.controllers = controllers;
+        this.sendQueue = new ConcurrentLinkedQueue<IPacket>();
+    }
 
-	}
+    @Override
+    public void pushPacket(IPacket packet) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public Queue<IPacket> getSendQueue() {
-		return new LinkedList<IPacket>(this.sendQueue);
-	}
+    }
 
-	@Override
-	public void next() {
-		for (val controller : this.getControllers()) {
-			controller.handle(this);
-		}
-	}
+    @Override
+    public Queue<IPacket> getSendQueue() {
+        return new LinkedList<IPacket>(this.sendQueue);
+    }
 
-	private ArrayList<INodeController> getControllers() {
-		return this.controllers;
-	}
+    @Override
+    public void next() {
+        for (val controller : this.getControllers()) {
+            controller.handle(this);
+        }
+    }
 
+    private ArrayList<INodeController> getControllers() {
+        return this.controllers;
+    }
 
+    @Override
+    public void addController(INodeController nc) {
+        this.controllers.add(nc);
+    }
+
+    @Override
+    public INode clone() {
+        val controllers = new ArrayList<INodeController>(this.controllers.size());
+        for(val ctr : this.controllers) {
+            controllers.add(ctr.clone());
+        }
+        return new Node(this.getRadioPower(), this.getPosition(), controllers);
+    }
 }

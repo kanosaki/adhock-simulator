@@ -4,4 +4,5 @@ import adsim.INode;
 
 public interface INodeController {
 	void handle(INode node);
+	INodeController clone();
 }
