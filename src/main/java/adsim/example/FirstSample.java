@@ -13,6 +13,8 @@ import adsim.core.CompositeScenario;
 import adsim.core.IScenario;
 import adsim.core.ISession;
 import adsim.defaults.Node;
+import adsim.defaults.NodeBuilder;
+import adsim.misc.Vector;
 
 public class FirstSample extends CompositeScenario {
 	public static void main(String[] args) {
@@ -28,7 +30,15 @@ public class FirstSample extends CompositeScenario {
 
 	@Override
 	public Iterable<INode> createNodes() {
-		val node = new Node();
-		return Arrays.asList(new INode[] { node });
+		return new NodeBuilder()
+		    .buildStart()
+		        .at(new Vector(50, 50))
+		        .radioPower(10)
+		        .push()
+		    .buildStart()
+		        .at(new Vector(100, 100))
+		        .radioPower(5)
+		        .push()
+		    .publish();
 	}
 }
