@@ -8,22 +8,18 @@ import adsim.misc.Vector;
  * Logical model for Node
  */
 public interface INode {
-    Vector getPosition();
+	void pushPacket(IPacket packet);
 
-    void setPosition(Vector pos);
+	Queue<IPacket> getSendQueue();
 
-    double getRadioPower();
+	void next();
 
-    void setRadioPower(double radioPower);
+	void addController(INodeController nc);
 
-    void pushPacket(IPacket packet);
+	INode clone();
 
-    Queue<IPacket> getSendQueue();
+	void injectDevice(IDevice device);
 
-    void next();
-
-    void addController(INodeController nc);
-    
-    INode clone();
+	IDevice getDevice();
 
 }

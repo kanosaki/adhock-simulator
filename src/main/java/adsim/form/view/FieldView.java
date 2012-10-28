@@ -24,7 +24,6 @@ public class FieldView extends JPanel {
 
     @Override
     protected void paintChildren(Graphics g) {
-        // TODO Auto-generated method stub
         super.paintChildren(g);
     }
 
@@ -32,7 +31,7 @@ public class FieldView extends JPanel {
     protected void paintComponent(Graphics gc) {
     	super.paintComponent(gc);
     	val g = GraphicsAdapter.create(gc);
-        for (val node : this.model.getNodes()) {
+        for (val node : this.model.getDevices()) {
             val pos = node.getPosition();
             val r = (node.getRadioPower() / 2) * zoom;
             g.drawOval((int) (pos.getX() - r), (int) (pos.getY() - r), (int) (r * 2), (int) (r * 2));

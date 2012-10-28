@@ -20,11 +20,11 @@ public class SpaceMediator {
 
 	}
 
-	private List<INode> getNodes() {
-		return this.field.getNodes();
+	private List<Device> getNodes() {
+		return this.field.getDevices();
 	}
 
-	public void dispatch(INode srcnode, IPacket packet) {
+	public void dispatch(Device srcnode, IPacket packet) {
 		for (val fnode : this.getNodes()) {
 			if (fnode.equals(srcnode))
 				continue;

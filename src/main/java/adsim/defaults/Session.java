@@ -1,5 +1,6 @@
 package adsim.defaults;
 
+import adsim.core.Field;
 import adsim.core.IScenario;
 import adsim.core.SessionBase;
 

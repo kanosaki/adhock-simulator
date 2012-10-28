@@ -29,6 +29,6 @@ public class CompositeScenario implements IScenario {
 	 * Override this method to configure initial nodes.
 	 */
 	public Iterable<INode> createNodes() {
-		return new ArrayList<INode>();
+		throw new IllegalStateException("Override this method or set nodes field");
 	}
 }

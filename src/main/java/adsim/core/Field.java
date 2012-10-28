@@ -9,16 +9,18 @@ import lombok.*;
 public class Field implements IField {
 	private final @Getter
 	SpaceMediator space = initSpace();
+	private ArrayList<Device> devices;
 
 	private ISession session;
 
 	@Override
-	public List<INode> getNodes() {
-		return this.session.getNodes();
+	public List<Device> getDevices() {
+		return this.devices;
 	}
 
 	public Field(ISession session) {
 		this.session = session;
+		this.devices = new ArrayList<Device>();
 	}
 
 	private SpaceMediator initSpace() {
@@ -26,8 +28,10 @@ public class Field implements IField {
 	}
 
 	@Override
-	public void addNode(INode node) {
-		this.space.addNode(node);
+	public void addDevice(Device dev) {
+		if (dev == null)
+			throw new IllegalArgumentException("dev is null");
+		this.devices.add(dev);
 	}
 
 	@Override
@@ -36,14 +40,12 @@ public class Field implements IField {
 	}
 
 	private void dispathPackets() {
-		for (val node : this.getNodes()) {
-			val sq = node.getSendQueue();
-			if (!sq.isEmpty()) {
-				for (val packet : sq) {
-					this.space.dispatch(node, packet);
-				}
+		for (val dev : this.getDevices()) {
+			IPacket sending = null;
+			while ((sending = dev.offerSend()) != null) {
+				space.dispatch(dev, sending);
 			}
 		}
 	}
-	
+
 }

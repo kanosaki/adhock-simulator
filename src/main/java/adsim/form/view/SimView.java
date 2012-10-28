@@ -26,9 +26,9 @@ public class SimView extends JPanel {
 		SimInfoView simInfoView = new SimInfoView();
 		add(simInfoView, BorderLayout.SOUTH);
 		
-		FieldView fieldView = new FieldView(model.getField());
-		add(fieldView, BorderLayout.CENTER);
-
+		
+		SessionView sessionView = new SessionView(model.getSession());
+		add(sessionView, BorderLayout.CENTER);
 	}
 
 	protected void onModelUpdated(ISimulator newModel) {

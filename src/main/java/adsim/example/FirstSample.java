@@ -21,9 +21,13 @@ public class FirstSample extends CompositeScenario {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				val simsrv = SimulatorService.start(new FirstSample());
-				val win = simsrv.getWindow();
-				win.setVisible(true);
+				try{
+					val simsrv = SimulatorService.start(new FirstSample());
+					val win = simsrv.getWindow();
+					win.setVisible(true);	
+				} catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		});
 	}

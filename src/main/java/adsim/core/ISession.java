@@ -14,4 +14,6 @@ public interface ISession {
 	void next();
 
 	void reset();
+	
+	IField getField();
 }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.*;
 
-
 public abstract class SessionBase implements ISession {
 	private final ArrayList<INode> nodes;
 	private IScenario scenario;
@@ -25,7 +24,7 @@ public abstract class SessionBase implements ISession {
 		this.scenario = scenario;
 		this.nodes = new ArrayList<INode>();
 		this.field = new Field(this);
-		scenario.init(this);
+		this.scenario.init(this);
 	}
 
 	/*
@@ -36,7 +35,7 @@ public abstract class SessionBase implements ISession {
 	@Override
 	public void addNode(INode node) {
 		this.nodes.add(node);
-		this.field.addNode(node);
+		this.field.addDevice((Device) node.getDevice());
 	}
 
 	/*

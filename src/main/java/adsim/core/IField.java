@@ -9,8 +9,8 @@ public interface IField {
 
 	public abstract void next();
 
-	public abstract void addNode(INode node);
+	public abstract void addDevice(Device device);
 
-	public abstract List<INode> getNodes();
+	public abstract List<Device> getDevices();
 
 }

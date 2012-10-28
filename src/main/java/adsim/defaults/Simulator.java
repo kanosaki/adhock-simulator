@@ -16,12 +16,15 @@ import adsim.core.SessionFinishedException;
  * 
  */
 public class Simulator implements ISimulator {
-	private ISession session;
+	private @Getter
+	ISession session;
+	
 	private IScenario scenario;
-	@Getter
-	private IField field;
+	
 	private boolean isStopInvoked;
+	
 	private Engine engine;
+	
 	private static final int MAX_STEPS = 100;
 
 	public Simulator() {
@@ -43,8 +46,7 @@ public class Simulator implements ISimulator {
 	}
 
 	private void init() {
-		this.session = new Session(scenario);
-		this.field = new Field(this.session);
+		this.session = new Session(this.scenario);
 		this.engine = new Engine();
 	}
 
