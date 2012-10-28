@@ -1,5 +1,9 @@
 package adsim.form;
 
+import lombok.*;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -14,6 +18,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
+@Slf4j
 public class SimulatorMainWindow extends JFrame {
 
 	private JPanel _contentPane;
@@ -22,6 +27,7 @@ public class SimulatorMainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public SimulatorMainWindow(ISimulator model) {
+		log.info("Initializing Simulator window.");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		
@@ -43,6 +49,7 @@ public class SimulatorMainWindow extends JFrame {
 		
 		SimView simView = new SimView(model);
 		_contentPane.add(simView, BorderLayout.CENTER);
+		log.debug("SimulatorMainWindow initialized.");
 	}
 
 }

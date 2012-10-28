@@ -13,6 +13,7 @@ public class SessionView extends JPanel {
 	 * Create the panel.
 	 */
 	public SessionView(ISession session) {
+		this.model = session;
 		setLayout(new BorderLayout(0, 0));
 		
 		FieldView fieldView = new FieldView(session.getField());

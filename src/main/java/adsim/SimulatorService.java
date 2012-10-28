@@ -14,6 +14,7 @@ import adsim.core.ISimulator;
 import adsim.defaults.SequenceScheduler;
 import adsim.defaults.Simulator;
 import adsim.form.SimulatorMainWindow;
+import adsim.misc.LoggingService;
 
 public class SimulatorService {
 	private ArrayList<IScenario> senarios;
@@ -21,6 +22,7 @@ public class SimulatorService {
 	private SimulatorMainWindow window;
 
 	public SimulatorService() {
+		LoggingService.initLoggers();
 		this.senarios = new ArrayList<IScenario>();
 		this.sim = this.createSimulator();
 	}
