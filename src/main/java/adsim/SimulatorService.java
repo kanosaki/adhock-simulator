@@ -3,6 +3,8 @@ package adsim;
 import java.util.ArrayList;
 
 import lombok.*;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,6 +18,7 @@ import adsim.defaults.Simulator;
 import adsim.form.SimulatorMainWindow;
 import adsim.misc.LoggingService;
 
+@Slf4j
 public class SimulatorService {
 	private ArrayList<IScenario> senarios;
 	private ISimulator sim;
@@ -43,6 +46,7 @@ public class SimulatorService {
 	}
 
 	public void start() {
+		log.info("Simulator started.");
 		this.start(new SequenceScheduler());
 	}
 

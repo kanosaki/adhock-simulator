@@ -8,8 +8,16 @@ public class CompositeScenario implements IScenario {
 	@Setter
 	private Iterable<INode> nodes;
 	
-	@Getter @Setter
+	@Setter
 	private String name;
+	
+	public String getName(){
+		if(this.name == null)
+			return this.name = this.getClass().getSimpleName();
+		else
+			return this.name;
+			
+	}
 
 	public Iterable<INode> getNodes() {
 		if (this.nodes == null)

@@ -1,6 +1,8 @@
 package adsim.defaults;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,21 +17,21 @@ import adsim.core.SessionFinishedException;
  * ISimulator implementation.
  * 
  */
+@Slf4j
 public class Simulator implements ISimulator {
 	private @Getter
 	ISession session;
-	
+
 	private IScenario scenario;
-	
+
 	private boolean isStopInvoked;
-	
+
 	private Engine engine;
-	
+
 	private static final int MAX_STEPS = 100;
 
 	public Simulator() {
 		this.isStopInvoked = false;
-
 	}
 
 	public void stop() {
@@ -40,6 +42,7 @@ public class Simulator implements ISimulator {
 	public void start(IScenario scenario) {
 		if (this.isStopInvoked)
 			throw new IllegalStateException("This simulator already closed.");
+		log.info(String.format("Starting simulator with scenario '%s'", scenario.getName()));
 		this.scenario = scenario;
 		this.init();
 		this.engine.start();
@@ -61,12 +64,13 @@ public class Simulator implements ISimulator {
 		@Override
 		public void run() {
 			try {
-
 				while (!isStopInvoked) {
 					// Guard for debugging
 					// TODO Remove this break
-					if (step > MAX_STEPS)
+					if (step > MAX_STEPS) {
+						log.warn("Simulator stopped because of debugging guard.");
 						break;
+					}
 					session.next();
 					step += 1;
 				}
