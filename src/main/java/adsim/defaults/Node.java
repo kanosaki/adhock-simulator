@@ -14,32 +14,21 @@ import adsim.core.IPacket;
 import adsim.misc.Vector;
 
 public class Node implements INode {
-	private static final double INITIAL_RADIO_POWER = 1.0;
 	private ArrayList<INodeController> controllers;
 	private Queue<IPacket> sendQueue;
 
 	@Getter
 	private Device device;
 
-	@Getter
-	@Setter
-	private double radioPower;
-
-	@Getter
-	@Setter
-	private Vector position;
-
 	public Node(Device device) {
-		this(device, INITIAL_RADIO_POWER, Vector.zero, new ArrayList<INodeController>());
+		this(device, new ArrayList<INodeController>());
 	}
 
 	/**
 	 * Copy constructor
 	 */
-	private Node(Device device, double radio, Vector pos, ArrayList<INodeController> controllers) {
+	private Node(Device device, ArrayList<INodeController> controllers) {
 		this.device = device;
-		this.radioPower = radio;
-		this.position = pos;
 		this.controllers = controllers;
 		this.sendQueue = new ConcurrentLinkedQueue<IPacket>();
 	}
@@ -82,6 +71,6 @@ public class Node implements INode {
 		for (val ctr : this.controllers) {
 			controllers.add(ctr.clone());
 		}
-		return new Node(device, this.getRadioPower(), this.getPosition(), controllers);
+		return new Node(device, controllers);
 	}
 }
