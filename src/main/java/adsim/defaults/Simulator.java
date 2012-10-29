@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import adsim.core.Field;
 import adsim.core.IField;
 import adsim.core.IScenario;
 import adsim.core.ISession;

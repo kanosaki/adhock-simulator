@@ -3,6 +3,8 @@ package adsim.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import adsim.defaults.Field;
+
 import lombok.*;
 
 public abstract class SessionBase implements ISession {
@@ -23,7 +25,7 @@ public abstract class SessionBase implements ISession {
 	public SessionBase(IScenario scenario) {
 		this.scenario = scenario;
 		this.nodes = new ArrayList<INode>();
-		this.field = new Field(this);
+		this.field = new Field();
 		this.scenario.init(this);
 	}
 

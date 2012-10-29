@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adsim.*;
+import adsim.defaults.Field;
 import lombok.*;
 
 /**
@@ -20,20 +21,20 @@ public class SpaceMediator {
 
 	}
 
-	private List<Device> getNodes() {
+	private List<Device> getDevices() {
 		return this.field.getDevices();
 	}
 
 	public void dispatch(Device srcnode, IPacket packet) {
-		for (val fnode : this.getNodes()) {
-			if (fnode.equals(srcnode))
+		for (val dst_candidate : this.getDevices()) {
+			if (dst_candidate.equals(srcnode))
 				continue;
 			val radius = srcnode.getRadioPower();
-			val tgt_pos = fnode.getPosition();
+			val tgt_pos = dst_candidate.getPosition();
 			val src_pos = srcnode.getPosition();
 			val distanceSq = tgt_pos.disatnceSquare(src_pos);
 			if (distanceSq < radius) {
-				fnode.pushPacket(packet);
+				dst_candidate.pushPacket(packet);
 			}
 		}
 	}

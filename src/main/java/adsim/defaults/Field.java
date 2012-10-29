@@ -1,8 +1,13 @@
-package adsim.core;
+package adsim.defaults;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import adsim.core.Device;
+import adsim.core.IField;
+import adsim.core.IPacket;
+import adsim.core.SpaceMediator;
 import adsim.misc.Vector;
 import lombok.*;
 
@@ -11,16 +16,17 @@ public class Field implements IField {
 	SpaceMediator space = initSpace();
 	private ArrayList<Device> devices;
 
-	private ISession session;
-
 	@Override
 	public List<Device> getDevices() {
 		return this.devices;
 	}
 
-	public Field(ISession session) {
-		this.session = session;
+	public Field() {
 		this.devices = new ArrayList<Device>();
+	}
+	
+	public Field(Collection<Device> initDevices) {
+	    this.devices = new ArrayList<Device>(initDevices);
 	}
 
 	private SpaceMediator initSpace() {

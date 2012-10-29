@@ -7,7 +7,7 @@ import lombok.*;
 import adsim.misc.Vector;
 
 public class Device implements IDevice {
-
+    public static final double DEFAULT_INITIAL_RADIOOOWER = 1.0;
 	@Getter
 	@Setter
 	private Vector position;
@@ -21,12 +21,14 @@ public class Device implements IDevice {
 	private Queue<IPacket> recvQueue;
 
 	public Device() {
+	    this.position = Vector.zero;
+	    this.radioPower = DEFAULT_INITIAL_RADIOOOWER;
 		this.sendQueue = new ConcurrentLinkedQueue<IPacket>();
 		this.recvQueue = new ConcurrentLinkedQueue<IPacket>();
 	}
 	
 	public IPacket offerSend() {
-		return this.sendQueue.peek();
+		return this.sendQueue.poll();
 	}
 
 	public void pushPacket(IPacket packet) {

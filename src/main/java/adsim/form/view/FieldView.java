@@ -5,8 +5,8 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import adsim.core.Field;
 import adsim.core.IField;
+import adsim.defaults.Field;
 import adsim.misc.GraphicsAdapter;
 
 public class FieldView extends JPanel {
