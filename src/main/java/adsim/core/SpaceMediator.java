@@ -33,7 +33,7 @@ public class SpaceMediator {
 			val tgt_pos = dst_candidate.getPosition();
 			val src_pos = srcnode.getPosition();
 			val distanceSq = tgt_pos.disatnceSquare(src_pos);
-			if (distanceSq < radius) {
+			if (distanceSq <= radius) {
 				dst_candidate.pushPacket(packet);
 			}
 		}
