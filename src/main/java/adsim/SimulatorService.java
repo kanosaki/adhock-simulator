@@ -1,71 +1,28 @@
 package adsim;
 
-import java.util.ArrayList;
-
 import lombok.*;
-import lombok.extern.java.Log;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JWindow;
-
 import adsim.core.IScenario;
-import adsim.core.ISimulationScheduler;
-import adsim.core.ISimulator;
-import adsim.defaults.SequenceScheduler;
-import adsim.defaults.Simulator;
-import adsim.form.SimulatorMainWindow;
+import adsim.core.Simulator;
 import adsim.misc.LoggingService;
 
-@Slf4j
 public class SimulatorService {
-	private ArrayList<IScenario> senarios;
-	private ISimulator sim;
-	private SimulatorMainWindow window;
-
 	public SimulatorService() {
 		LoggingService.initLoggers();
-		this.senarios = new ArrayList<IScenario>();
-		this.sim = this.createSimulator();
 	}
 
 	public static SimulatorService start(IScenario scenario) {
 		val simsrv = new SimulatorService();
-		simsrv.addScenario(scenario);
-		simsrv.start();
+		simsrv.run(scenario);
 		return simsrv;
 	}
 
-	protected ISimulator createSimulator() {
-		return new Simulator();
+	public void run(IScenario scenario) {
+		val sim = new Simulator(scenario);
+		sim.start();
 	}
-
-	public void addScenario(IScenario scenario) {
-		this.senarios.add(scenario);
-	}
-
-	public void start() {
-		log.info("Simulator started.");
-		this.start(new SequenceScheduler());
-	}
-
-	public void start(ISimulationScheduler scheduler) {
-		scheduler.start(this.sim, this.senarios);
-	}
-
-	public JFrame getWindow() {
-		if (this.window == null)
-			return this.window = this.createWindow();
-		else
-			return this.window;
-	}
-
-	private SimulatorMainWindow createWindow() {
-		return new SimulatorMainWindow(this.sim);
-	}
-
-	public JPanel getPanel() {
-		throw new RuntimeException("Not Implemented" + Util.getCodeInfo());
+	
+	// 0.0 - 1.0
+	public double getProgress() {
+	    throw new UnsupportedOperationException("Not implemented");
 	}
 }

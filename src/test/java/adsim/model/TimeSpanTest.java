@@ -2,9 +2,6 @@ package adsim.model;
 
 import static org.junit.Assert.*;
 
-import java.util.Calendar;
-import java.util.Locale;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

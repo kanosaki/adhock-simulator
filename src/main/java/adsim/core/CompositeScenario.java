@@ -1,15 +1,16 @@
 package adsim.core;
 
 import lombok.*;
-import java.util.ArrayList;
+import java.util.Collection;
+
+import adsim.report.ReporterRepository;
 
 
-public class CompositeScenario implements IScenario {
-	@Setter
-	private Iterable<INode> nodes;
-	
+public abstract class CompositeScenario implements IScenario {
 	@Setter
 	private String name;
+	
+	private Collection<ICase> cases;
 	
 	public String getName(){
 		if(this.name == null)
@@ -19,24 +20,20 @@ public class CompositeScenario implements IScenario {
 			
 	}
 
-	public Iterable<INode> getNodes() {
-		if (this.nodes == null)
-			return this.nodes = this.createNodes();
-		else
-			return this.nodes;
-	}
-
 	@Override
-	public void init(ISession session) {
-		for (val node : this.getNodes()) {
-			session.addNode(node);
-		}
+	public void init(Simulator sim) {
 	}
 
-	/**
-	 * Override this method to configure initial nodes.
-	 */
-	public Iterable<INode> createNodes() {
-		throw new IllegalStateException("Override this method or set nodes field");
+	public ReporterRepository createRepoters() {
+	    return new ReporterRepository();
 	}
+	
+	protected abstract Collection<ICase> createCases();
+
+    @Override
+    public Collection<ICase> getCases() {
+        if(cases == null)
+            cases = createCases();
+        return cases;
+    }
 }

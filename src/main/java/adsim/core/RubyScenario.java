@@ -6,12 +6,11 @@ import org.jruby.runtime.scope.ManyVarsDynamicScope;
 
 import lombok.*;
 
-public class RubyScenario implements IScenario {
+public class RubyScenario /* implements IScenario */ {
     @Getter
     private String name;
 
-    @Override
-    public void init(ISession session) {
+    public void init(Session session) {
         val jruby = this.createJRubyEngine();
         val code = jruby.parse(this.loadInitScript());
         this.prepareScope(code.getScope());
@@ -32,5 +31,4 @@ public class RubyScenario implements IScenario {
         jruby.setCompileMode(CompileMode.JIT);
         return jruby;
     }
-
 }

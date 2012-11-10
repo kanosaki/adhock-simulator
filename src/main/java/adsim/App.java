@@ -1,13 +1,12 @@
 package adsim;
 
-import lombok.*;
-
 /**
  * Hello world!
  * 
  */
 public class App {
-	public static void main(String[] args) {
-		
-	}
+    public static void main(String[] args) {
+        for (int i = 0; i < 20; i++) {
+        }
+    }
 }

@@ -6,7 +6,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import adsim.core.Device;
-import adsim.core.IPacket;
+import adsim.core.Field;
+import adsim.core.Message;
 import adsim.misc.Vector;
 
 public class FieldTest {
@@ -44,7 +45,7 @@ public class FieldTest {
         assertEquals(packet, dev3.recv());
     }
 
-    static class DummyPacket implements IPacket {
+    static class DummyPacket extends Message {
 
     }
 

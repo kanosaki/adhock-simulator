@@ -1,10 +1,7 @@
 package adsim.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import adsim.*;
-import adsim.defaults.Field;
 import lombok.*;
 
 /**
@@ -17,7 +14,7 @@ public class SpaceMediator {
 		this.field = field;
 	}
 
-	public void addNode(INode node) {
+	public void addNode(Node node) {
 
 	}
 
@@ -25,7 +22,7 @@ public class SpaceMediator {
 		return this.field.getDevices();
 	}
 
-	public void dispatch(Device srcnode, IPacket packet) {
+	public void dispatch(Device srcnode, Message packet) {
 		for (val dst_candidate : this.getDevices()) {
 			if (dst_candidate.equals(srcnode))
 				continue;
