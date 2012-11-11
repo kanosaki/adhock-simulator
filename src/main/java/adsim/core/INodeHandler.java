@@ -8,7 +8,7 @@ package adsim.core;
  *  Move node
  *  
  */
-public interface INodeHandler extends Comparable<INodeHandler> {
+public interface INodeHandler extends Cloneable, Comparable<INodeHandler> {
     void initialize(Node node);
 
     void interval(Session sess, Node node);

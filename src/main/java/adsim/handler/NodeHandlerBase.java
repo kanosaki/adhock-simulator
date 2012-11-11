@@ -1,5 +1,6 @@
 package adsim.handler;
 
+import lombok.*;
 import adsim.core.INodeHandler;
 
 public abstract class NodeHandlerBase implements INodeHandler {
@@ -24,12 +25,18 @@ public abstract class NodeHandlerBase implements INodeHandler {
                         : 1);
 
     }
-    
+
     @Override
     public void onSignal(String name, INodeHandler sender, Object arg) {
         // TODO Auto-generated method stub
-        
+
     }
 
-    public abstract INodeHandler clone();
+    public INodeHandler clone() {
+        try {
+            return (NodeHandlerBase) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

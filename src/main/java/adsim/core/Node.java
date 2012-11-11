@@ -4,8 +4,6 @@ import lombok.*;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import jline.internal.Log;
-
 import adsim.handler.VoidHandler;
 import adsim.misc.Vector;
 
@@ -17,9 +15,9 @@ public class Node {
     @Getter
     private int bufferMax;
 
-    @Getter
+    @Getter(value = AccessLevel.PROTECTED)
     private Device device;
-
+    
     public Node() {
         this(VoidHandler.get());
     }

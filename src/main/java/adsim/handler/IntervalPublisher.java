@@ -39,10 +39,8 @@ public class IntervalPublisher extends NodeHandlerBase {
     }
 
     @Override
-    public INodeHandler clone() {
-        val ret = new IntervalPublisher(interval);
-        ret.count = count;
-        return ret;
+    public IntervalPublisher clone() {
+        return (IntervalPublisher) super.clone();
     }
 
 }
