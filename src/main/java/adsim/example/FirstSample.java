@@ -29,8 +29,11 @@ public class FirstSample extends CompositeScenario {
         });
     }
 
-    @Override
-    protected Collection<ICase> createCases() {
+    public FirstSample() {
+        super(createCases());
+    }
+
+    protected static Collection<ICase> createCases() {
         return new CaseBuilder()
                 .name("FirstSample")
                 .step(100)
