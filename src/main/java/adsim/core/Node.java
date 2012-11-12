@@ -29,6 +29,9 @@ public class Node {
 
     // ----- Out of model ----
     private ArrayList<Message> createdMessages;
+    
+    @Getter
+    private ArrayList<Node> friends;
 
     // -----------------------
 
@@ -152,5 +155,9 @@ public class Node {
      */
     public void moveTo(Vector v) {
         device.setPosition(v);
+    }
+
+    public void addFriend(Node newfriend) {
+        friends.add(newfriend);
     }
 }

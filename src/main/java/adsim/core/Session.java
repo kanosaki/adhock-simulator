@@ -3,11 +3,15 @@ package adsim.core;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 public class Session {
     private int DEFAULT_STEP_LIMIT = 100;
+    private int DEFAULT_MAX_FRIENDSHIPS = 10;
+    private int DEFAULT_MIN_FRIENDSHIPS = 1;
     private ICase cas;
 
     @Getter
@@ -17,7 +21,10 @@ public class Session {
     private long stepLimit;
 
     @Getter
-    private long createdMessages;
+    private long createdMessagesCount;
+
+    @Getter
+    private long reachedMessagesCount;
 
     public List<Node> getNodes() {
         return cas.getNodes();
@@ -60,12 +67,43 @@ public class Session {
             while (step < stepLimit) { // TODO: REMOVE THIS GUARD
                 next();
             }
+            log.info("Session finished.");
         } catch (SessionFinishedException e) {
-            log.info("Session finied.");
+            log.info("Session aborted.");
+        }
+    }
+
+    /**
+     * メッセージを送信する際に全くランダムに送るのでは無く、「知っている人物に定期的に送る」という挙動を実現するために事前に"Friends"
+     * として各ノードにメッセージの送信先ノードを登録しておきます
+     * 。事前に登録されるFriendの数は、DEFAULT_MAX_FRIENDSHIPS以下
+     * 、DEFAULT_MIN_FRIENDSHIPS以上で、疑似一様分布に従って選択されます。
+     */
+    public void createFriendships() {
+        val rand = new Random();
+        val max = DEFAULT_MAX_FRIENDSHIPS;
+        val min = DEFAULT_MIN_FRIENDSHIPS;
+        val nodeCount = cas.getNodes().size();
+        for (val me : cas.getNodes()) {
+            // generate random number between max and min
+            val friendCount = rand.nextInt(max - min) + min;
+            val friends = new ArrayList<Integer>(friendCount);
+            while (friends.size() < friendCount) {
+                val nextCandidate = rand.nextInt(nodeCount - 1) - 1;
+                if (!friends.contains(nextCandidate)) {
+                    val newfriend = cas.getNodes().get(nextCandidate);
+                    me.addFriend(newfriend);
+                    friends.add(nextCandidate);
+                }
+            }
         }
     }
 
     public void onMessageCreated(Node node, Message msg) {
-        createdMessages += 1;
+        createdMessagesCount += 1;
+    }
+
+    public void onMessageReached(Node node, Message msg) {
+        reachedMessagesCount += 1;
     }
 }

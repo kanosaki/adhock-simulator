@@ -18,8 +18,6 @@ public class Simulator {
 
     private Engine engine;
 
-    private static final int MAX_STEPS = 100;
-
     // Threadpool for Engine
     private static ExecutorService threadpool = Executors.newCachedThreadPool();
 
@@ -36,7 +34,8 @@ public class Simulator {
     public void start() {
         if (this.isStopInvoked)
             throw new IllegalStateException("This simulator already closed.");
-        log.info(String.format("Starting simulator with scenario '%s'", scenario.getName()));
+        log.info(String.format("Starting simulator with scenario '%s'",
+                scenario.getName()));
         this.engine.start();
     }
 
@@ -62,9 +61,6 @@ public class Simulator {
     }
 
     class Engine implements Runnable {
-
-        int step;
-
         public void start() {
             threadpool.execute(this);
         }
@@ -73,16 +69,9 @@ public class Simulator {
         public void run() {
             try {
                 while (!isStopInvoked) {
-                    // Guard for debugging
-                    // TODO Remove this break
-                    if (step > MAX_STEPS) {
-                        log.warn("Simulator stopped because of debugging guard.");
-                        break;
-                    }
                     for (val cas : scenario.getCases()) {
                         new Session(cas).start();
                     }
-                    step += 1;
                 }
                 onCompleted();
             } catch (SessionFinishedException sfe) {
