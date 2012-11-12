@@ -2,9 +2,12 @@ package adsim.core;
 
 import lombok.*;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import adsim.report.TextCaseReport;
 
 public class Case implements ICase {
     @Getter
@@ -13,6 +16,8 @@ public class Case implements ICase {
     
     @Getter @Setter
     private long stepLimit;
+    
+    private ICaseReport reporter;
     
     private ArrayList<Node> nodes;
 
@@ -31,11 +36,14 @@ public class Case implements ICase {
 
     @Override
     public ICaseReport report(Session session) {
-        // TODO Auto-generated method stub
-        return null;
+        return reporter;
     }
 
     public void addNodes(Collection<Node> nodes2) {
         nodes.addAll(nodes2);
+    }
+
+    public void textReport(OutputStream out) {
+        reporter = new TextCaseReport(out);
     }
 }

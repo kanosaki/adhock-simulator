@@ -9,12 +9,15 @@ import java.util.List;
 public class Session {
     private int DEFAULT_STEP_LIMIT = 100;
     private ICase cas;
-    
+
     @Getter
     private long step;
-    
+
     @Getter
     private long stepLimit;
+
+    @Getter
+    private long createdMessages;
 
     public List<Node> getNodes() {
         return cas.getNodes();
@@ -51,14 +54,18 @@ public class Session {
         }
         this.field.next();
     }
- 
+
     public void start() {
         try {
-            while (step < 100) { // TODO: REMOVE THIS GUARD
+            while (step < stepLimit) { // TODO: REMOVE THIS GUARD
                 next();
             }
         } catch (SessionFinishedException e) {
             log.info("Session finied.");
         }
+    }
+
+    public void onMessageCreated(Node node, Message msg) {
+        createdMessages += 1;
     }
 }

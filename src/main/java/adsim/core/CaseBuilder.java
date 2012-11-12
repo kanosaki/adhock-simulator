@@ -1,5 +1,6 @@
 package adsim.core;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,6 +59,11 @@ public class CaseBuilder {
     public CaseBuilder nodes(int count) {
         return nodes(count, currentHandler == null ? VoidHandler.get()
                 : currentHandler);
+    }
+    
+    public CaseBuilder report(OutputStream out) {
+        currentCase.textReport(out);
+        return this;
     }
 
     public List<ICase> done() {
