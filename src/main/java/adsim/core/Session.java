@@ -88,10 +88,16 @@ public class Session {
         val nodeCount = nodes.size();
         for (val me : nodes) {
             // generate random number between max and min
-            val friendCount = rand.nextInt(max - min) + min;
+            val friendCount =
+                    max == 1
+                            ? 1
+                            : rand.nextInt(max - min) + min;
             val friends = new ArrayList<Integer>(friendCount);
             while (friends.size() < friendCount) {
-                val nextCandidate = rand.nextInt(nodeCount - 1) - 1;
+                val nextCandidate =
+                        nodeCount == 1
+                                ? 0
+                                : rand.nextInt(nodeCount - 1) - 1;
                 if (!friends.contains(nextCandidate)) {
                     val newfriend = nodes.get(nextCandidate);
                     me.addFriend(newfriend);
