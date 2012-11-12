@@ -1,5 +1,6 @@
 package adsim.handler;
 
+import lombok.*;
 import adsim.core.INodeHandler;
 import adsim.core.Message;
 import adsim.core.Node;
@@ -18,8 +19,9 @@ public class FIFOCollector extends NodeHandlerBase {
 
     @Override
     public void onReceived(Node self, Message packet) {
-        if (self.isBufferFilled())
-            self.getBuffer().poll();
+        if (self.isBufferFilled()) {
+            self.disposeMessage(0);
+        }
         self.pushPacket(packet);
     }
 

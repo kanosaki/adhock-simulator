@@ -1,7 +1,11 @@
 package adsim.core;
 
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import adsim.handler.VoidHandler;
@@ -9,26 +13,46 @@ import adsim.misc.Vector;
 
 public class Node {
     public static final int INITIAL_BUFFER_MAX = 10;
+
+    @Getter
+    private final String id;
     @Getter
     private INodeHandler handler;
-    private ConcurrentLinkedQueue<Message> msgBuffer;
+    private final ArrayList<Message> msgBuffer;
     @Getter
     private int bufferMax;
 
     @Getter(value = AccessLevel.PROTECTED)
     private Device device;
-    
+
+    private Session session;
+
+    // ----- Out of model ----
+    private ArrayList<Message> createdMessages;
+
+    // -----------------------
+
+    protected static String generateRandomId() {
+        return UUID.randomUUID().toString();
+    }
+
     public Node() {
         this(VoidHandler.get());
     }
 
     public Node(INodeHandler handler) {
-        this(INITIAL_BUFFER_MAX, new Device(),
-                new ConcurrentLinkedQueue<Message>(), handler);
+        this(generateRandomId(), handler);
     }
 
-    private Node(int bufferMax, Device device,
-            ConcurrentLinkedQueue<Message> buffer, INodeHandler handler) {
+    public Node(String id, INodeHandler handler) {
+        this(id, INITIAL_BUFFER_MAX, new Device(),
+                new ArrayList<Message>(), handler);
+    }
+
+    // Copy constructor
+    private Node(String id, int bufferMax, Device device,
+            ArrayList<Message> buffer, INodeHandler handler) {
+        this.id = id;
         this.setBufferMax(bufferMax);
         this.device = device;
         this.msgBuffer = buffer;
@@ -42,7 +66,7 @@ public class Node {
         msgBuffer.add(packet);
     }
 
-    public Queue<Message> getBuffer() {
+    public List<Message> getBuffer() {
         return msgBuffer;
     }
 
@@ -52,6 +76,10 @@ public class Node {
 
     public void injectDevice(Device device) {
         this.device = (Device) device;
+    }
+
+    public void injectSession(Session session) {
+        this.session = session;
     }
 
     public void broadcast(Message msg) {
@@ -64,7 +92,24 @@ public class Node {
      * @return 作成されたメッセージ
      */
     public Message createMessage() {
-        throw new UnsupportedOperationException("NotImplemented");
+        val newmsg = new Message();
+        if (session != null) {
+            session.onMessageCreated(this, newmsg);
+        }
+        return newmsg;
+    }
+
+    /**
+     * バッファからメッセージを除去します。
+     * 
+     * @param msg
+     */
+    public void disposeMessage(Message msg) {
+        msgBuffer.remove(msg);
+    }
+
+    public void disposeMessage(int index) {
+        msgBuffer.remove(index);
     }
 
     public void next(Session sess) {
@@ -77,11 +122,12 @@ public class Node {
 
     public Node clone() {
         val dev = device.clone();
-        val newMsgBuffer = new ConcurrentLinkedQueue<Message>();
+        val newMsgBuffer = new ArrayList<Message>();
         for (val msg : msgBuffer) {
             newMsgBuffer.add(msg.clone());
         }
-        return new Node(this.getBufferMax(), dev, newMsgBuffer, handler.clone());
+        return new Node(id, this.getBufferMax(), dev, newMsgBuffer,
+                handler.clone());
     }
 
     private void setBufferMax(int bufferMax) {
