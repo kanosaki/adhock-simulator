@@ -24,7 +24,7 @@ public class App {
             System.exit(-1);
         }
         
-    }
+    } 
 
     /*
      * Example: java -jar adsim.jar [-i <filename(scenario.xml)>] [-o

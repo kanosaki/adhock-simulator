@@ -43,15 +43,6 @@ public class Util {
         return ret;
     }
 
-    public static Collection<Node> nodesClone(
-            Collection<Node> handlers) {
-        val ret = new ArrayList<Node>(handlers.size());
-        for (val h : handlers) {
-            ret.add(h.clone());
-        }
-        return ret;
-    }
-
     public static int randInt(int min, int max) {
         return random.nextInt(max - min) + min;
     }

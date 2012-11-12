@@ -127,7 +127,7 @@ public class Node {
         handler.interval(sess, this);
     }
 
-    public Node clone() {
+    protected Node clone() {
         val dev = device.clone();
         val newMsgBuffer = new ArrayList<Message>();
         for (val msg : msgBuffer) {
