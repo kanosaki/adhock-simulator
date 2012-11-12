@@ -1,33 +1,49 @@
 package adsim.handler;
 
+import lombok.*;
 import adsim.core.INodeHandler;
 import adsim.core.Message;
 import adsim.core.Node;
 import adsim.core.Session;
 
+/**
+ * 定期的にバッファのメッセージを順番に送信します。
+ */
 public class FloodingReplayer extends NodeHandlerBase {
+    private int index;
+
+    public FloodingReplayer() {
+        this(0);
+    }
+
+    // Copy constructor
+    private FloodingReplayer(int index) {
+        this.index = index;
+    }
 
     @Override
     public void initialize(Node node) {
-        // TODO Auto-generated method stub
-        
+        // Do nothing
     }
 
     @Override
     public void interval(Session sess, Node node) {
-        // TODO Auto-generated method stub
-        
+        val buffer = node.getBuffer();
+        if (!buffer.isEmpty()) {
+            val nextPointer = (index + 1) % buffer.size();
+            node.broadcast(buffer.get(nextPointer));
+        }
     }
 
     @Override
     public void onReceived(Node self, Message packet) {
-        // TODO Auto-generated method stub
-        
+        // Do nothing
+
     }
 
     @Override
     public INodeHandler clone() {
-        return this;
+        return new FloodingReplayer(index);
     }
 
 }
