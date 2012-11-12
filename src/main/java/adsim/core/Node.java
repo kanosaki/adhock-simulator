@@ -15,7 +15,7 @@ public class Node {
     public static final int INITIAL_BUFFER_MAX = 10;
 
     @Getter
-    private final String id;
+    private final NodeID id;
     @Getter
     private INodeHandler handler;
     private final ArrayList<Message> msgBuffer;
@@ -36,8 +36,8 @@ public class Node {
 
     // -----------------------
 
-    protected static String generateRandomId() {
-        return UUID.randomUUID().toString();
+    protected static NodeID generateRandomId() {
+        return new NodeID();
     }
 
     public Node() {
@@ -48,13 +48,13 @@ public class Node {
         this(generateRandomId(), handler);
     }
 
-    public Node(String id, INodeHandler handler) {
+    public Node(NodeID id, INodeHandler handler) {
         this(id, INITIAL_BUFFER_MAX, new Device(),
                 new ArrayList<Message>(), handler);
     }
 
     // Copy constructor
-    private Node(String id, int bufferMax, Device device,
+    private Node(NodeID id, int bufferMax, Device device,
             ArrayList<Message> buffer, INodeHandler handler) {
         this.id = id;
         this.setBufferMax(bufferMax);
@@ -96,7 +96,7 @@ public class Node {
      * @return 作成されたメッセージ
      */
     public void createMessage(Node node) {
-        val newmsg = new Message();
+        val newmsg = new Message(getId(), node.getId());
         if (session != null) {
             session.onMessageCreated(this, newmsg);
         }
@@ -116,7 +116,10 @@ public class Node {
         msgBuffer.remove(index);
     }
 
-    public void next(Session sess) {
+    /**
+     * deviceから受信したメッセージを取得し処理します
+     */
+    private void retrieveMessages() {
         Message msg = null;
         while ((msg = device.recv()) != null) {
             // pushMessage経由では無く、容量を無視して追加します。
@@ -124,6 +127,10 @@ public class Node {
             msgBuffer.add(msg);
             handler.onReceived(this, msg);
         }
+    }
+
+    public void next(Session sess) {
+        retrieveMessages();
         handler.interval(sess, this);
     }
 

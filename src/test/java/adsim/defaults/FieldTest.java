@@ -8,6 +8,7 @@ import org.junit.Test;
 import adsim.core.Device;
 import adsim.core.Field;
 import adsim.core.Message;
+import adsim.core.NodeID;
 import adsim.misc.Vector;
 
 public class FieldTest {
@@ -46,7 +47,9 @@ public class FieldTest {
     }
 
     static class DummyPacket extends Message {
-
+        public DummyPacket() {
+            super(new NodeID(), new NodeID());
+        }
     }
 
 }
