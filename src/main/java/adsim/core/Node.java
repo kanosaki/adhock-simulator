@@ -21,7 +21,7 @@ public class Node {
     private final ArrayList<Message> msgBuffer;
     @Getter
     private ArrayList<Message> createdMessages;
-    
+
     @Getter
     private int bufferMax;
 
@@ -119,6 +119,9 @@ public class Node {
     public void next(Session sess) {
         Message msg = null;
         while ((msg = device.recv()) != null) {
+            // pushMessage経由では無く、容量を無視して追加します。
+            // handlerの中に不要メッセージを捨てるNodeHandlerがある必要があります
+            msgBuffer.add(msg);
             handler.onReceived(this, msg);
         }
         handler.interval(sess, this);

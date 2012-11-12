@@ -19,10 +19,9 @@ public class FIFOCollector extends NodeHandlerBase {
 
     @Override
     public void onReceived(Node self, Message packet) {
-        if (self.isBufferFilled()) {
+        while (self.isBufferFilled()) {
             self.disposeMessage(0);
         }
-        self.pushMessage(packet);
     }
 
     public INodeHandler clone() {
