@@ -1,6 +1,7 @@
 package adsim.handler;
 
 import lombok.*;
+import adsim.Util;
 import adsim.core.INodeHandler;
 import adsim.core.Message;
 import adsim.core.Node;
@@ -21,7 +22,8 @@ public class IntervalPublisher extends NodeHandlerBase {
     }
 
     private void pushNext(Node node) {
-        throw new UnsupportedOperationException("Not implemented");
+        val destNode = Util.randomSelect(node.getFriends());
+        node.createMessage(destNode);
     }
 
     @Override

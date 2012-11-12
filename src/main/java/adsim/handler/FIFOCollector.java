@@ -22,7 +22,7 @@ public class FIFOCollector extends NodeHandlerBase {
         if (self.isBufferFilled()) {
             self.disposeMessage(0);
         }
-        self.pushPacket(packet);
+        self.pushMessage(packet);
     }
 
     public INodeHandler clone() {

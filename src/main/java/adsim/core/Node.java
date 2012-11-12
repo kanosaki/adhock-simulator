@@ -20,6 +20,9 @@ public class Node {
     private INodeHandler handler;
     private final ArrayList<Message> msgBuffer;
     @Getter
+    private ArrayList<Message> createdMessages;
+    
+    @Getter
     private int bufferMax;
 
     @Getter(value = AccessLevel.PROTECTED)
@@ -28,8 +31,6 @@ public class Node {
     private Session session;
 
     // ----- Out of model ----
-    private ArrayList<Message> createdMessages;
-    
     @Getter
     private ArrayList<Node> friends;
 
@@ -62,7 +63,7 @@ public class Node {
         this.handler = handler;
     }
 
-    public void pushPacket(Message packet) {
+    public void pushMessage(Message packet) {
         if (isBufferFilled()) {
             throw new IllegalStateException("Buffer is overloaded.");
         }
@@ -94,12 +95,12 @@ public class Node {
      * 
      * @return 作成されたメッセージ
      */
-    public Message createMessage() {
+    public void createMessage(Node node) {
         val newmsg = new Message();
         if (session != null) {
             session.onMessageCreated(this, newmsg);
         }
-        return newmsg;
+        createdMessages.add(newmsg);
     }
 
     /**
