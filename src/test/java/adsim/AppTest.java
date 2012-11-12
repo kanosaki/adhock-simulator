@@ -1,34 +1,25 @@
 package adsim;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import lombok.*;
+import org.apache.commons.cli.ParseException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public AppTest(String testName) {
-		super(testName);
-	}
+public class AppTest {
 
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(AppTest.class);
-	}
-
-	/**
-	 * Rigourous Test :-)
-	 */
-	public void testApp() {
-		assertTrue(true);
-	}
+    @Test
+    public void test_ExecParams() {
+        val argLine = "-i foobar.xml -o hogehoge.csv";
+        val args = argLine.split(" ");
+        try {
+            val params = new App.ExecParams(args);
+            assertEquals("foobar.xml", params.getInputFile());
+            assertEquals("hogehoge.csv", params.getOutputFile());
+        } catch (ParseException e) {
+            fail();
+        }
+    }
 }
