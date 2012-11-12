@@ -81,17 +81,19 @@ public class Session {
      */
     public void createFriendships() {
         val rand = new Random();
-        val max = DEFAULT_MAX_FRIENDSHIPS;
-        val min = DEFAULT_MIN_FRIENDSHIPS;
-        val nodeCount = cas.getNodes().size();
-        for (val me : cas.getNodes()) {
+        val nodes = cas.getNodes();
+        val max = (int) Math
+                .min(DEFAULT_MAX_FRIENDSHIPS, nodes.size());
+        val min = (int) Math.min(max, DEFAULT_MIN_FRIENDSHIPS);
+        val nodeCount = nodes.size();
+        for (val me : nodes) {
             // generate random number between max and min
             val friendCount = rand.nextInt(max - min) + min;
             val friends = new ArrayList<Integer>(friendCount);
             while (friends.size() < friendCount) {
                 val nextCandidate = rand.nextInt(nodeCount - 1) - 1;
                 if (!friends.contains(nextCandidate)) {
-                    val newfriend = cas.getNodes().get(nextCandidate);
+                    val newfriend = nodes.get(nextCandidate);
                     me.addFriend(newfriend);
                     friends.add(nextCandidate);
                 }
