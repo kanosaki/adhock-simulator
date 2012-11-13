@@ -46,7 +46,20 @@ public class Session {
         this.stepLimit = cas.getStepLimit();
         stepCheck();
         log.debug("Session for " + cas.toString() + " initialized");
+        init();
+    }
+
+    private void init() {
+        initField();
         createFriendships();
+    }
+
+    private void initField() {
+        val nodes = cas.getNodes();
+        field.expandCapacity(nodes.size());
+        for (val node : nodes) {
+            field.addDevice(node.getDevice());
+        }
     }
 
     private void stepCheck() {

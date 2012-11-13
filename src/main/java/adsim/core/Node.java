@@ -1,16 +1,15 @@
 package adsim.core;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import adsim.handler.VoidHandler;
 import adsim.misc.Vector;
 
+@Slf4j
 public class Node {
     public static final int INITIAL_BUFFER_MAX = 10;
 
@@ -50,7 +49,7 @@ public class Node {
 
     public Node(NodeID id, INodeHandler handler) {
         this.id = id;
-        this.setBufferMax(bufferMax);
+        this.setBufferMax(INITIAL_BUFFER_MAX);
         this.device = new Device();
         this.msgBuffer = new ArrayList<Message>();
         this.friends = new ArrayList<Node>();
@@ -83,6 +82,8 @@ public class Node {
 
     public void broadcast(Message msg) {
         device.send(msg);
+        log.debug(String.format("MESSAGE SENT: %s -> %s", id,
+                msg.getDestinationId()));
     }
 
     /**
@@ -117,11 +118,21 @@ public class Node {
     private void retrieveMessages() {
         Message msg = null;
         while ((msg = device.recv()) != null) {
-            // pushMessage経由では無く、容量を無視して追加します。
-            // handlerの中に不要メッセージを捨てるNodeHandlerがある必要があります
-            msgBuffer.add(msg);
+            // 自分宛
+            if (msg.getDestinationId().equals(id)) {
+                acceptMessage(msg);
+            } else { // 自分宛ではない
+                // pushMessage経由では無く、容量を無視して追加します。
+                // handlerの中に不要メッセージを捨てるNodeHandlerがある必要があります
+                msgBuffer.add(msg);
+            }
             handler.onReceived(this, msg);
         }
+    }
+
+    private void acceptMessage(Message msg) {
+        log.debug(String.format("MESSAGE ACCEPTED: %s <- %s", id,
+                msg.getSourceId()));
     }
 
     public void next(Session sess) {
@@ -154,7 +165,12 @@ public class Node {
     }
 
     public void addFriend(Node newfriend) {
-        if (!friends.contains(newfriend))
+        if (!(friends.contains(newfriend) || this.equals(newfriend)))
             friends.add(newfriend);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("<Node@%s>", id);
     }
 }

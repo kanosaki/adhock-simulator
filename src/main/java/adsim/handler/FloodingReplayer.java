@@ -28,6 +28,10 @@ public class FloodingReplayer extends NodeHandlerBase {
 
     @Override
     public void interval(Session sess, Node node) {
+        for (val msg : node.getCreatedMessages()) {
+            node.pushMessage(msg);
+        }
+        node.getCreatedMessages().clear();
         val buffer = node.getBuffer();
         if (!buffer.isEmpty()) {
             val nextPointer = (index + 1) % buffer.size();
