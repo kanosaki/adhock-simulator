@@ -68,10 +68,8 @@ public class Simulator {
         @Override
         public void run() {
             try {
-                while (!isStopInvoked) {
-                    for (val cas : scenario.getCases()) {
-                        new Session(cas).start();
-                    }
+                for (val cas : scenario.getCases()) {
+                    new Session(cas).start();
                 }
                 onCompleted();
             } catch (SessionFinishedException sfe) {

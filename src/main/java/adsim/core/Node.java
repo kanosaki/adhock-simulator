@@ -49,17 +49,12 @@ public class Node {
     }
 
     public Node(NodeID id, INodeHandler handler) {
-        this(id, INITIAL_BUFFER_MAX, new Device(),
-                new ArrayList<Message>(), handler);
-    }
-
-    // Copy constructor
-    private Node(NodeID id, int bufferMax, Device device,
-            ArrayList<Message> buffer, INodeHandler handler) {
         this.id = id;
         this.setBufferMax(bufferMax);
-        this.device = device;
-        this.msgBuffer = buffer;
+        this.device = new Device();
+        this.msgBuffer = new ArrayList<Message>();
+        this.friends = new ArrayList<Node>();
+        this.createdMessages = new ArrayList<Message>();
         this.handler = handler;
     }
 
@@ -134,16 +129,6 @@ public class Node {
         handler.interval(sess, this);
     }
 
-    protected Node clone() {
-        val dev = device.clone();
-        val newMsgBuffer = new ArrayList<Message>();
-        for (val msg : msgBuffer) {
-            newMsgBuffer.add(msg.clone());
-        }
-        return new Node(id, this.getBufferMax(), dev, newMsgBuffer,
-                handler.clone());
-    }
-
     private void setBufferMax(int bufferMax) {
         this.bufferMax = bufferMax;
     }
@@ -169,6 +154,7 @@ public class Node {
     }
 
     public void addFriend(Node newfriend) {
-        friends.add(newfriend);
+        if (!friends.contains(newfriend))
+            friends.add(newfriend);
     }
 }

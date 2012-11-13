@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import adsim.Util;
+
 @Slf4j
 public class Session {
     private int DEFAULT_STEP_LIMIT = 100;
@@ -44,6 +46,7 @@ public class Session {
         this.stepLimit = cas.getStepLimit();
         stepCheck();
         log.debug("Session for " + cas.toString() + " initialized");
+        createFriendships();
     }
 
     private void stepCheck() {
@@ -80,27 +83,23 @@ public class Session {
      * 、DEFAULT_MIN_FRIENDSHIPS以上で、疑似一様分布に従って選択されます。
      */
     public void createFriendships() {
-        val rand = new Random();
         val nodes = cas.getNodes();
+        if (nodes.size() < 2)
+            return;
         val max = (int) Math
                 .min(DEFAULT_MAX_FRIENDSHIPS, nodes.size());
         val min = (int) Math.min(max, DEFAULT_MIN_FRIENDSHIPS);
         val nodeCount = nodes.size();
         for (val me : nodes) {
             // generate random number between max and min
-            val friendCount =
-                    max == 1
-                            ? 1
-                            : rand.nextInt(max - min) + min;
+            val friendCount = Util.randInt(min, max);
             val friends = new ArrayList<Integer>(friendCount);
             while (friends.size() < friendCount) {
-                val nextCandidate =
-                        nodeCount == 1
-                                ? 0
-                                : rand.nextInt(nodeCount - 1) - 1;
+                val nextCandidate = Util.randInt(0, nodeCount - 1);
                 if (!friends.contains(nextCandidate)) {
                     val newfriend = nodes.get(nextCandidate);
                     me.addFriend(newfriend);
+                    newfriend.addFriend(me);
                     friends.add(nextCandidate);
                 }
             }

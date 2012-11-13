@@ -52,6 +52,8 @@ public class Util {
     }
 
     public static <T> T randomSelect(List<T> lst) {
+        if (lst.size() == 0)
+            return null;
         return lst.get(random.nextInt(lst.size()));
     }
 }
