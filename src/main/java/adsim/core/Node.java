@@ -183,4 +183,8 @@ public class Node {
     public String toString() {
         return String.format("<Node@%s>", id);
     }
+
+    public enum Signals {
+        ReqestCollectBuffer
+    }
 }
