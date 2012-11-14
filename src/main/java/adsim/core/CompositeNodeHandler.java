@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import adsim.handler.NodeHandlerBase;
+import adsim.handler.SignalArgs;
 import adsim.handler.VoidHandler;
 
 import lombok.*;
@@ -96,7 +97,7 @@ public class CompositeNodeHandler extends NodeHandlerBase {
     }
     
     @Override
-    public void onSignal(String name, INodeHandler sender, Object arg) {
+    public void onSignal(String name, INodeHandler sender, SignalArgs arg) {
         for(val nh : handlers) {
             nh.onSignal(name, sender, arg);
         }
