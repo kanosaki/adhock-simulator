@@ -57,12 +57,8 @@ public class Node {
         this.handler = handler;
     }
 
-    public void pushMessage(Message packet) {
-        if (isBufferFilled()) {
-            throw new IllegalStateException("Buffer is overloaded.");
-        }
-        msgBuffer.add(packet);
-    }
+    // ------------------------------
+    // --- interface for handlers ---
 
     public List<Message> getBuffer() {
         return msgBuffer;
@@ -84,6 +80,13 @@ public class Node {
         device.send(msg);
         log.debug(String.format("MESSAGE SENT: %s -> %s", id,
                 msg.getDestinationId()));
+    }
+
+    public void pushMessage(Message packet) {
+        if (isBufferFilled()) {
+            throw new IllegalStateException("Buffer is overloaded.");
+        }
+        msgBuffer.add(packet);
     }
 
     /**
@@ -111,6 +114,33 @@ public class Node {
     public void disposeMessage(int index) {
         msgBuffer.remove(index);
     }
+
+    /**
+     * 現在の座標から指定されたベクトル分移動します。相対位置移動です
+     * 
+     * @param v
+     *            移動するベクトル
+     */
+    public void move(Vector v) {
+        device.setPosition(device.getPosition().add(v));
+    }
+
+    /**
+     * 指定された座標へ移動します。絶対位置移動です
+     * 
+     * @param v
+     *            移動先の位置
+     */
+    public void moveTo(Vector v) {
+        device.setPosition(v);
+    }
+
+    public void fireSignal(String name, INodeHandler sender, Object arg) {
+        handler.onSignal(name, sender, arg);
+    }
+
+    // --- interface for handlers END ---
+    // ----------------------------------
 
     /**
      * deviceから受信したメッセージを取得し処理します
@@ -142,26 +172,6 @@ public class Node {
 
     private void setBufferMax(int bufferMax) {
         this.bufferMax = bufferMax;
-    }
-
-    /**
-     * 現在の座標から指定されたベクトル分移動します。相対位置移動です
-     * 
-     * @param v
-     *            移動するベクトル
-     */
-    public void move(Vector v) {
-        device.setPosition(device.getPosition().add(v));
-    }
-
-    /**
-     * 指定された座標へ移動します。絶対位置移動です
-     * 
-     * @param v
-     *            移動先の位置
-     */
-    public void moveTo(Vector v) {
-        device.setPosition(v);
     }
 
     public void addFriend(Node newfriend) {
