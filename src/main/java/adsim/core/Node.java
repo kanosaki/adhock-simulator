@@ -6,12 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 
+import adsim.handler.SignalArgs;
 import adsim.handler.VoidHandler;
 import adsim.misc.Vector;
 
 @Slf4j
 public class Node {
     public static final int INITIAL_BUFFER_MAX = 10;
+
+    // -- Signals --
+    public static final String SIGNAL_COLLECT_BUFFER = "Node/RequestCollectBuffer";
+
+    // -------------
 
     @Getter
     private final NodeID id;
@@ -135,8 +141,18 @@ public class Node {
         device.setPosition(v);
     }
 
-    public void fireSignal(String name, INodeHandler sender, Object arg) {
+    /**
+     * シグナルを送信します
+     * @param name シグナルの名前
+     * @param sender シグナルを送信したINodeHandler
+     * @param arg シグナルの引数
+     */
+    public void fireSignal(String name, INodeHandler sender, SignalArgs arg) {
         handler.onSignal(name, sender, arg);
+    }
+
+    public void fireSignal(String name, INodeHandler sender) {
+        fireSignal(name, sender, SignalArgs.Void);
     }
 
     // --- interface for handlers END ---
@@ -182,9 +198,5 @@ public class Node {
     @Override
     public String toString() {
         return String.format("<Node@%s>", id);
-    }
-
-    public enum Signals {
-        ReqestCollectBuffer
     }
 }

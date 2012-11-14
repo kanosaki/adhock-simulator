@@ -1,5 +1,7 @@
 package adsim.core;
 
+import adsim.handler.SignalArgs;
+
 /*
  * Executes following actions:
  *  Node initialize(Initial messages, position)
@@ -21,5 +23,8 @@ public interface INodeHandler extends Cloneable, Comparable<INodeHandler> {
 
     String getName();
 
-    void onSignal(String name, INodeHandler sender, Object arg);
+    /**
+     * シグナルを処理します
+     */
+    void onSignal(String name, INodeHandler sender, SignalArgs arg);
 }

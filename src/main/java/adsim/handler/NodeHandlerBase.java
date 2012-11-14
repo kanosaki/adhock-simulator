@@ -46,8 +46,7 @@ public abstract class NodeHandlerBase implements INodeHandler {
      * 同じNodeのNodeHandlerのみに通知されます。
      */
     @Override
-    public void onSignal(String name, INodeHandler sender, Object arg) {
-
+    public void onSignal(String name, INodeHandler sender, SignalArgs arg) {
     }
 
     public INodeHandler clone() {
