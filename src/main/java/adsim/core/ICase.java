@@ -11,5 +11,7 @@ public interface ICase {
     
     long getStepLimit();
     
+    double getFieldSize();
+    
     ICaseReport report(Session session);
 }

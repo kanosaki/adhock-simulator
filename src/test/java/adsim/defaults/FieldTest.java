@@ -17,7 +17,7 @@ public class FieldTest {
     public void test_send() {
         val dev1 = new Device();
         val dev2 = new Device();
-        val field = new Field();
+        val field = new Field(100);
         field.addDevice(dev1);
         field.addDevice(dev2);
         val packet = new DummyPacket();
@@ -35,7 +35,7 @@ public class FieldTest {
         val dev3 = new Device();
         dev2.setPosition(new Vector(0, 2));
         dev3.setPosition(new Vector(1, 0));
-        val field = new Field();
+        val field = new Field(100);
         field.addDevice(dev1);
         field.addDevice(dev2);
         field.addDevice(dev3);

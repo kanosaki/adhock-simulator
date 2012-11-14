@@ -41,7 +41,7 @@ public class Session {
 
     public Session(ICase cas) {
         this.cas = cas;
-        this.field = new Field();
+        this.field = new Field(cas.getFieldSize());
         this.step = 0;
         this.stepLimit = cas.getStepLimit();
         stepCheck();

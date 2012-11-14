@@ -6,8 +6,6 @@ import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.Test;
 
-import adsim.handler.IHandlerSignal;
-
 public class NodeTest {
     @Test
     public void test_differentId() {
@@ -15,17 +13,18 @@ public class NodeTest {
         val node2 = new Node();
         assertThat(node1.getId(), is(not(node2.getId())));
     }
-    
-    static enum DummySignals implements IHandlerSignal {
+
+    @Test
+    public void test_signals() {
         
     }
-    
+
     static class DummyDevice extends Device {
         @Override
         public void send(Message packet) {
             super.send(packet);
         }
-        
+
         @Override
         public Message recv() {
             return super.recv();

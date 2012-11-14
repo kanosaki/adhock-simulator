@@ -46,4 +46,9 @@ public class Case implements ICase {
     public void textReport(OutputStream out) {
         reporter = new TextCaseReport(out);
     }
+
+    @Override
+    public double getFieldSize() {
+        return 1000; // FIXME
+    }
 }

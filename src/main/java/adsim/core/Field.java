@@ -3,24 +3,24 @@ package adsim.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import lombok.*;
 
 public class Field {
+    public static final int MAX_SEND_COUNT = 100;
     private final @Getter
     SpaceMediator space = initSpace();
+    private double size;
     private ArrayList<Device> devices;
 
     public List<Device> getDevices() {
         return this.devices;
     }
 
-    public Field() {
+    public Field(double fieldSize) {
+        this.size = fieldSize;
         this.devices = new ArrayList<Device>();
-    }
-
-    public Field(Collection<Device> initDevices) {
-        this.devices = new ArrayList<Device>(initDevices);
     }
 
     private SpaceMediator initSpace() {
@@ -41,11 +41,13 @@ public class Field {
         this.dispathPackets();
     }
 
-    private void dispathPackets() {
-        for (val dev : this.getDevices()) {
-            Message sending = null;
-            while ((sending = dev.offerSend()) != null) {
-                space.dispatch(dev, sending);
+    private void dispathPackets() { // FIXME
+        for (int sent = 0; sent < MAX_SEND_COUNT; sent++) {
+            for(val dev : getDevices()) {
+                val request = dev.offerSend();
+                if(request != null) {
+                    space.dispatch(dev, request);
+                }
             }
         }
     }
