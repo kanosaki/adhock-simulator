@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import adsim.Util;
+import adsim.misc.Vector;
 
 @Slf4j
 public class Session {
@@ -51,7 +52,10 @@ public class Session {
 
     private void init() {
         initField();
+        log.debug("Creating friendships...");
         createFriendships();
+        log.debug("Creating roundpoints...");
+        registerRoundPoints();
     }
 
     private void initField() {
@@ -95,26 +99,45 @@ public class Session {
      * 。事前に登録されるFriendの数は、DEFAULT_MAX_FRIENDSHIPS以下
      * 、DEFAULT_MIN_FRIENDSHIPS以上で、疑似一様分布に従って選択されます。
      */
-    public void createFriendships() {
+    private void createFriendships() {
         val nodes = cas.getNodes();
         if (nodes.size() < 2)
             return;
         val max = (int) Math
                 .min(DEFAULT_MAX_FRIENDSHIPS, nodes.size());
         val min = (int) Math.min(max, DEFAULT_MIN_FRIENDSHIPS);
-        val nodeCount = nodes.size();
         for (val me : nodes) {
             // generate random number between max and min
             val friendCount = Util.randInt(min, max);
-            val friends = new ArrayList<Integer>(friendCount);
-            while (friends.size() < friendCount) {
-                val nextCandidate = Util.randInt(0, nodeCount - 1);
-                if (!friends.contains(nextCandidate)) {
-                    val newfriend = nodes.get(nextCandidate);
-                    me.addFriend(newfriend);
-                    newfriend.addFriend(me);
-                    friends.add(nextCandidate);
-                }
+            while (me.getFriends().size() < friendCount) {
+                val newfriend = Util.randomSelect(nodes);
+                me.addFriend(newfriend);
+                newfriend.addFriend(me);
+            }
+        }
+    }
+
+    private Vector createRandomPoint() {
+        return new Vector(Math.random() * cas.getFieldSize(), Math.random()
+                * cas.getFieldSize());
+    }
+
+    private void registerRoundPoints() {
+        int groupHop = 3;
+        long pointCount = getNodes().size() * 3;
+        for (int i = 0; i < pointCount; i++) {
+            val centerNodes = Util.randomSelect(getNodes());
+            recAppendRoundPoint(centerNodes, createRandomPoint(), groupHop);
+        }
+    }
+
+    private void recAppendRoundPoint(Node tgt, Vector point, int recRemain) {
+        if (recRemain == 0)
+            return;
+        else {
+            for (val friend : tgt.getFriends()) {
+                friend.addRoundPoint(point);
+                recAppendRoundPoint(friend, point, recRemain - 1);
             }
         }
     }

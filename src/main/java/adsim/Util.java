@@ -44,10 +44,13 @@ public class Util {
     }
 
     public static int randInt(int min, int max) {
-        return random.nextInt(max - min) + min;
+        // nextInt(n) returns 0 <= x < n
+        return random.nextInt(max - min + 1) + min;
     }
 
     public static <T> T randomSelect(List<T> lst, int min, int max) {
+        if (lst.size() == 0)
+            return null;
         return lst.get(randInt(min, max));
     }
 

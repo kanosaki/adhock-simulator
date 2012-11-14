@@ -39,6 +39,9 @@ public class Node {
     @Getter
     private ArrayList<Node> friends;
 
+    @Getter
+    private ArrayList<Vector> roundPoints;
+
     // -----------------------
 
     protected static NodeID generateRandomId() {
@@ -60,6 +63,7 @@ public class Node {
         this.msgBuffer = new ArrayList<Message>();
         this.friends = new ArrayList<Node>();
         this.createdMessages = new ArrayList<Message>();
+        this.roundPoints = new ArrayList<Vector>();
         this.handler = handler;
     }
 
@@ -143,9 +147,13 @@ public class Node {
 
     /**
      * シグナルを送信します
-     * @param name シグナルの名前
-     * @param sender シグナルを送信したINodeHandler
-     * @param arg シグナルの引数
+     * 
+     * @param name
+     *            シグナルの名前
+     * @param sender
+     *            シグナルを送信したINodeHandler
+     * @param arg
+     *            シグナルの引数
      */
     public void fireSignal(String name, INodeHandler sender, SignalArgs arg) {
         handler.onSignal(name, sender, arg);
@@ -193,6 +201,10 @@ public class Node {
     public void addFriend(Node newfriend) {
         if (!(friends.contains(newfriend) || this.equals(newfriend)))
             friends.add(newfriend);
+    }
+
+    public void addRoundPoint(Vector point) {
+        roundPoints.add(point);
     }
 
     @Override
