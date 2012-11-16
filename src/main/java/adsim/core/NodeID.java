@@ -21,4 +21,8 @@ public class NodeID {
     public NodeID clone() {
         return new NodeID(id);
     }
+    
+    public String shortToString() {
+        return id.toString().substring(0, 8);
+    }
 }

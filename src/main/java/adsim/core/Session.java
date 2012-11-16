@@ -104,7 +104,7 @@ public class Session {
         if (nodes.size() < 2)
             return;
         val max = (int) Math
-                .min(DEFAULT_MAX_FRIENDSHIPS, nodes.size());
+                .min(DEFAULT_MAX_FRIENDSHIPS, nodes.size() - 1);
         val min = (int) Math.min(max, DEFAULT_MIN_FRIENDSHIPS);
         for (val me : nodes) {
             // generate random number between max and min

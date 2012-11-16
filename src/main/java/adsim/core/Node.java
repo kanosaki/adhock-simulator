@@ -65,6 +65,11 @@ public class Node {
         this.createdMessages = new ArrayList<Message>();
         this.roundPoints = new ArrayList<Vector>();
         this.handler = handler;
+        init();
+    }
+
+    private void init() {
+        handler.initialize(this);
     }
 
     // ------------------------------
@@ -78,18 +83,9 @@ public class Node {
         return msgBuffer.size() >= getBufferMax();
     }
 
-    public void injectDevice(Device device) {
-        this.device = (Device) device;
-    }
-
-    public void injectSession(Session session) {
-        this.session = session;
-    }
-
     public void broadcast(Message msg) {
         device.send(msg);
-        log.debug(String.format("MESSAGE SENT: %s -> %s", id,
-                msg.getDestinationId()));
+        log.debug(String.format("MESSAGE SENT: <%s>[%s]", this, msg));
     }
 
     public void pushMessage(Message packet) {
@@ -105,7 +101,7 @@ public class Node {
      * @return 作成されたメッセージ
      */
     public void createMessage(Node node) {
-        val newmsg = new Message(getId(), node.getId());
+        val newmsg = new Message.Envelope(getId(), node.getId());
         if (session != null) {
             session.onMessageCreated(this, newmsg);
         }
@@ -173,8 +169,8 @@ public class Node {
         Message msg = null;
         while ((msg = device.recv()) != null) {
             // 自分宛
-            if (msg.getDestinationId().equals(id)) {
-                acceptMessage(msg);
+            if (msg instanceof Message.Envelope) {
+                acceptEnvelope((Message.Envelope) msg);
             } else { // 自分宛ではない
                 // pushMessage経由では無く、容量を無視して追加します。
                 // handlerの中に不要メッセージを捨てるNodeHandlerがある必要があります
@@ -184,9 +180,10 @@ public class Node {
         }
     }
 
-    private void acceptMessage(Message msg) {
-        log.debug(String.format("MESSAGE ACCEPTED: %s <- %s", id,
-                msg.getSourceId()));
+    private void acceptEnvelope(Message.Envelope msg) {
+        if(msg.getToId().equals(id)) {
+            log.debug(String.format("MESSAGE ACCEPTED: [%s]", msg));    
+        }
     }
 
     public void next(Session sess) {
@@ -209,6 +206,6 @@ public class Node {
 
     @Override
     public String toString() {
-        return String.format("<Node@%s>", id);
+        return String.format("<Node@%s>", id.shortToString());
     }
 }

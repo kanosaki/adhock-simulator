@@ -29,11 +29,15 @@ public class FirstSample extends CompositeScenario {
                 .name("FirstSample")
                 .step(100)
                 .nodes(new NodeBuilder()
-                        .startAt(0, 0)
-                        .handler(new FIFOCollector())
-                        .handler(new IntervalPublisher(10))
-                        .handler(new FloodingReplayer())
-                        .push(2)
+                        .startAt(0, 1)
+                        .handler(new FIFOCollector(),
+                                new IntervalPublisher(10),
+                                new FloodingReplayer())
+                        .push(1)
+                        .startAt(0, 2)
+                        .push(1)
+                        .startAt(0, 3)
+                        .push(1)
                         .done())
                 .push()
                 .done();

@@ -48,6 +48,10 @@ public class Util {
         return random.nextInt(max - min + 1) + min;
     }
 
+    public static long randLong() {
+        return random.nextLong();
+    }
+
     public static <T> T randomSelect(List<T> lst, int min, int max) {
         if (lst.size() == 0)
             return null;
