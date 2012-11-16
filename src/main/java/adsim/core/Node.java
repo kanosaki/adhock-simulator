@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import adsim.handler.SignalArgs;
@@ -54,6 +56,11 @@ public class Node {
 
     public Node(INodeHandler handler) {
         this(generateRandomId(), handler);
+    }
+
+    public Node(INodeHandler... hdrs) {
+        this(generateRandomId(), new CompositeNodeHandler(Arrays.asList(hdrs))
+                .prune());
     }
 
     public Node(NodeID id, INodeHandler handler) {
@@ -181,8 +188,8 @@ public class Node {
     }
 
     private void acceptEnvelope(Message.Envelope msg) {
-        if(msg.getToId().equals(id)) {
-            log.debug(String.format("MESSAGE ACCEPTED: [%s]", msg));    
+        if (msg.getToId().equals(id)) {
+            log.debug(String.format("MESSAGE ACCEPTED: [%s]", msg));
         }
     }
 
