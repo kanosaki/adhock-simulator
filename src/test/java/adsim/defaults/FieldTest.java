@@ -48,7 +48,12 @@ public class FieldTest {
 
     static class DummyPacket extends Message {
         public DummyPacket() {
-            super(new NodeID(), new NodeID());
+            super();
+        }
+
+        @Override
+        public int getType() {
+            return -1;
         }
     }
 
