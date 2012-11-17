@@ -21,7 +21,7 @@ public class FirstSample extends CompositeScenario {
     }
 
     public FirstSample() {
-        super(createCases());
+        super(createCases(), System.out);
     }
 
     protected static Collection<ICase> createCases() {

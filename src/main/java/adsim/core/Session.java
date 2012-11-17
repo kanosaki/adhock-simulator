@@ -84,13 +84,18 @@ public class Session {
 
     public void start() {
         try {
-            while (step < stepLimit) { // TODO: REMOVE THIS GUARD
+            while (step < stepLimit) {
                 next();
             }
+            onCompleted();
             log.info("Session finished.");
         } catch (SessionFinishedException e) {
             log.info("Session aborted.");
         }
+    }
+
+    protected void onCompleted() {
+        cas.tellResult(new ResultReport(createdMessagesCount, reachedMessagesCount, field.getWholeSentCount(), field.getWholeDisposedCount()));
     }
 
     /**

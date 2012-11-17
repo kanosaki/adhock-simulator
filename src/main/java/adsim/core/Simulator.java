@@ -43,14 +43,11 @@ public class Simulator {
         this.engine = new Engine();
     }
 
-    public IScenarioReport report() {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
     /**
      * Called when Engine#run finished.
      */
     protected void onFinished() {
+        scenario.report();
     }
 
     /**
@@ -71,9 +68,8 @@ public class Simulator {
                 for (val cas : scenario.getCases()) {
                     new Session(cas).start();
                 }
+                log.info("Simulator finisied.");
                 onCompleted();
-            } catch (SessionFinishedException sfe) {
-                log.info("Session finisied.");
             } finally {
                 onFinished();
             }

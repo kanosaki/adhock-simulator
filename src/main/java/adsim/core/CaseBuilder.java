@@ -61,11 +61,6 @@ public class CaseBuilder {
                 : currentHandler);
     }
     
-    public CaseBuilder report(OutputStream out) {
-        currentCase.textReport(out);
-        return this;
-    }
-
     public List<ICase> done() {
         return Collections.unmodifiableList(result);
     }

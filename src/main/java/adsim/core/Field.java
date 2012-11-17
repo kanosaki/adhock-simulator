@@ -56,4 +56,12 @@ public class Field {
         devices.ensureCapacity(devices.size() + size);
     }
 
+    public long getWholeDisposedCount() {
+        return 0;
+    }
+
+    public long getWholeSentCount() {
+        return 0;
+    }
+
 }
