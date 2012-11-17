@@ -1,11 +1,19 @@
 package adsim;
 
 import lombok.*;
+import java.util.ArrayList;
+
+import lombok.*;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+
+import adsim.core.Case;
+import adsim.core.Case.CollectMode;
+import adsim.core.CompositeScenario;
+import adsim.core.ICase;
 
 /**
  * Simulator entry point
@@ -23,8 +31,11 @@ public class App {
             System.out.println(e.getMessage());
             System.exit(-1);
         }
-        
-    } 
+        val cases = new ArrayList<ICase>();
+        cases.add(new Case(2, 10, 0, CollectMode.FIFO));
+        val scenario = new CompositeScenario(cases, System.out);
+        SimulatorService.start(scenario);
+    }
 
     /*
      * Example: java -jar adsim.jar [-i <filename(scenario.xml)>] [-o

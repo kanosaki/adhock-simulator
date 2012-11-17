@@ -33,10 +33,6 @@ public class Session {
         return cas.getNodes();
     }
 
-    private @Getter
-    @Setter(AccessLevel.PROTECTED)
-    WorkerState state;
-
     private final @Getter
     Field field;
 
