@@ -51,6 +51,9 @@ public class Session {
     }
 
     private void init() {
+        for(val node : getNodes()) {
+            node.setSession(this);
+        }
         initField();
         log.debug("Creating friendships...");
         createFriendships();

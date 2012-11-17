@@ -27,7 +27,7 @@ public class FirstSample extends CompositeScenario {
     protected static Collection<ICase> createCases() {
         return new CaseBuilder()
                 .name("FirstSample")
-                .step(100)
+                .step(15)
                 .nodes(new NodeBuilder()
                         .startAt(0, 1)
                         .handler(new FIFOCollector(),
@@ -35,8 +35,6 @@ public class FirstSample extends CompositeScenario {
                                 new FloodingReplayer())
                         .push(1)
                         .startAt(0, 2)
-                        .push(1)
-                        .startAt(0, 3)
                         .push(1)
                         .done())
                 .push()

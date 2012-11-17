@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import adsim.handler.SignalArgs;
@@ -35,6 +36,8 @@ public class Node {
     @Getter(value = AccessLevel.PROTECTED)
     private Device device;
 
+    @Getter
+    @Setter
     private Session session;
 
     // ----- Out of model ----
@@ -43,6 +46,8 @@ public class Node {
 
     @Getter
     private ArrayList<Vector> roundPoints;
+    
+    private HashSet<Long> receivedMessages;
 
     // -----------------------
 
@@ -71,6 +76,7 @@ public class Node {
         this.friends = new ArrayList<Node>();
         this.createdMessages = new ArrayList<Message>();
         this.roundPoints = new ArrayList<Vector>();
+        this.receivedMessages = new HashSet<Long>();
         this.handler = handler;
         init();
     }
@@ -175,7 +181,6 @@ public class Node {
     private void retrieveMessages() {
         Message msg = null;
         while ((msg = device.recv()) != null) {
-            // 自分宛
             if (msg instanceof Message.Envelope) {
                 acceptEnvelope((Message.Envelope) msg);
             } else { // 自分宛ではない
@@ -189,6 +194,10 @@ public class Node {
 
     private void acceptEnvelope(Message.Envelope msg) {
         if (msg.getToId().equals(id)) {
+            if(!receivedMessages.contains(msg.getId())) {
+                receivedMessages.add(msg.getId());
+                session.onMessageReached(this, msg);
+            }
             log.debug(String.format("MESSAGE ACCEPTED: [%s]", msg));
         }
     }

@@ -51,4 +51,10 @@ public class Device {
         newone.recvQueue = new ConcurrentLinkedQueue<Message>(recvQueue);
         return newone;
     }
+
+    public int tellOverflowed() {
+        int overflowPackets = sendQueue.size();
+        sendQueue.clear();
+        return overflowPackets;
+    }
 }

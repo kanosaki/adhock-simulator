@@ -14,6 +14,9 @@ public class Field {
     private double size;
     private ArrayList<Device> devices;
 
+    private long sentCount;
+    private long disposedCount;
+
     public List<Device> getDevices() {
         return this.devices;
     }
@@ -43,12 +46,17 @@ public class Field {
 
     private void dispathPackets() { // FIXME
         for (int sent = 0; sent < MAX_SEND_COUNT; sent++) {
-            for(val dev : getDevices()) {
+            for (val dev : getDevices()) {
                 val request = dev.offerSend();
-                if(request != null) {
+                if (request != null) {
+                    sentCount += 1;
                     space.dispatch(dev, request);
                 }
             }
+        }
+        for (val dev : getDevices()) {
+            val remain = dev.tellOverflowed();
+            disposedCount += remain;
         }
     }
 
@@ -57,11 +65,11 @@ public class Field {
     }
 
     public long getWholeDisposedCount() {
-        return 0;
+        return disposedCount;
     }
 
     public long getWholeSentCount() {
-        return 0;
+        return sentCount;
     }
 
 }
