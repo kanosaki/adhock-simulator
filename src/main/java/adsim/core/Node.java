@@ -14,7 +14,7 @@ import adsim.handler.VoidHandler;
 import adsim.misc.Vector;
 
 @Slf4j
-public class Node {
+public class Node implements Comparable<Node> {
     public static final int INITIAL_BUFFER_MAX = 10;
 
     // -- Signals --
@@ -86,6 +86,9 @@ public class Node {
 
     public void onSessionInitialized() {
         handler.initialize(this);
+        log.info(String.format("%s ready. Friends:%d, RoundPoints:%d", this,
+                friends.size(),
+                roundPoints.size()));
     }
 
     // ------------------------------
@@ -230,5 +233,10 @@ public class Node {
     @Override
     public String toString() {
         return String.format("<Node@%s>", id.shortToString());
+    }
+
+    @Override
+    public int compareTo(Node arg0) {
+        return this.getId().compareTo(arg0.getId());
     }
 }

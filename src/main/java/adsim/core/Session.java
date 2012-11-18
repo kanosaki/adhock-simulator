@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import adsim.Util;
 import adsim.misc.Vector;
@@ -42,12 +44,12 @@ public class Session {
         this.step = 0;
         this.stepLimit = cas.getStepLimit();
         stepCheck();
-        log.debug("Session for " + cas.toString() + " initialized");
         init();
+        log.debug("Session for " + cas.toString() + " initialized");
     }
 
     private void init() {
-        for(val node : getNodes()) {
+        for (val node : getNodes()) {
             node.setSession(this);
         }
         initField();
@@ -55,7 +57,7 @@ public class Session {
         createFriendships();
         log.debug("Creating roundpoints...");
         registerRoundPoints();
-        for(val node : getNodes()) {
+        for (val node : getNodes()) {
             node.onSessionInitialized();
         }
     }
@@ -97,7 +99,9 @@ public class Session {
     }
 
     protected void onCompleted() {
-        cas.tellResult(new ResultReport(createdMessagesCount, reachedMessagesCount, field.getWholeSentCount(), field.getWholeDisposedCount()));
+        cas.tellResult(new ResultReport(createdMessagesCount,
+                reachedMessagesCount, field.getWholeSentCount(), field
+                        .getWholeDisposedCount()));
     }
 
     /**
@@ -134,17 +138,20 @@ public class Session {
         long pointCount = getNodes().size() * 3;
         for (int i = 0; i < pointCount; i++) {
             val centerNodes = Util.randomSelect(getNodes());
-            recAppendRoundPoint(centerNodes, createRandomPoint(), groupHop);
+            recAppendRoundPoint(centerNodes, createRandomPoint(), groupHop,
+                    new TreeSet<Node>());
         }
     }
 
-    private void recAppendRoundPoint(Node tgt, Vector point, int recRemain) {
-        if (recRemain == 0)
+    private void recAppendRoundPoint(Node tgt, Vector point, int recRemain,
+            Set<Node> visited) {
+        if (recRemain == 0 || visited.contains(tgt))
             return;
         else {
+            visited.add(tgt);
             for (val friend : tgt.getFriends()) {
                 friend.addRoundPoint(point);
-                recAppendRoundPoint(friend, point, recRemain - 1);
+                recAppendRoundPoint(friend, point, recRemain - 1, visited);
             }
         }
     }
