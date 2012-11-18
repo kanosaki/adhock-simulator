@@ -46,7 +46,11 @@ public class Node {
 
     @Getter
     private ArrayList<Vector> roundPoints;
-    
+
+    @Getter
+    @Setter
+    private Vector currentDestination;
+
     private HashSet<Long> receivedMessages;
 
     // -----------------------
@@ -78,10 +82,9 @@ public class Node {
         this.roundPoints = new ArrayList<Vector>();
         this.receivedMessages = new HashSet<Long>();
         this.handler = handler;
-        init();
     }
 
-    private void init() {
+    public void onSessionInitialized() {
         handler.initialize(this);
     }
 
@@ -154,6 +157,10 @@ public class Node {
         device.setPosition(v);
     }
 
+    public Vector getLocation() {
+        return device.getPosition();
+    }
+
     /**
      * シグナルを送信します
      * 
@@ -194,7 +201,7 @@ public class Node {
 
     private void acceptEnvelope(Message.Envelope msg) {
         if (msg.getToId().equals(id)) {
-            if(!receivedMessages.contains(msg.getId())) {
+            if (!receivedMessages.contains(msg.getId())) {
                 receivedMessages.add(msg.getId());
                 session.onMessageReached(this, msg);
             }

@@ -55,6 +55,9 @@ public class Session {
         createFriendships();
         log.debug("Creating roundpoints...");
         registerRoundPoints();
+        for(val node : getNodes()) {
+            node.onSessionInitialized();
+        }
     }
 
     private void initField() {

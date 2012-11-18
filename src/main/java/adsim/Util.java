@@ -63,4 +63,31 @@ public class Util {
             return null;
         return lst.get(random.nextInt(lst.size()));
     }
+
+    public static <T> T randomSelectExcept(List<T> src, T... excepts) {
+        // 無限ループを回避するためexpectsに含まれない要素が存在するか確かめます。
+        boolean anotherContains = false;
+        for (T one : src) {
+            for (T check : excepts) {
+                if (!one.equals(check)) {
+                    anotherContains = true;
+                    break;
+                }
+            }
+            if (anotherContains) // 余計なループを脱出
+                break;
+        }
+        if (!anotherContains) {
+            throw new IllegalArgumentException(
+                    "randomSelectExceptでは、選択元のリストに除く要素以外の要素が含まれる必要があります");
+        }
+        while (true) {
+            T one = Util.randomSelect(src);
+            for (T check : excepts) {
+                if (!one.equals(check)) {
+                    return one;
+                }
+            }
+        }
+    }
 }
