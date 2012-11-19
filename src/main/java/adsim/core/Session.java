@@ -160,7 +160,7 @@ public class Session {
         createdMessagesCount += 1;
     }
 
-    public void onMessageReached(Node node, Message msg) {
+    public void onMessageAccepted(Node node, Message msg) {
         reachedMessagesCount += 1;
     }
 }

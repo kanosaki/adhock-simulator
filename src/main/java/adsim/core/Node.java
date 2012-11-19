@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import adsim.handler.SignalArgs;
 import adsim.handler.VoidHandler;
@@ -30,6 +32,9 @@ public class Node implements Comparable<Node> {
     private final ArrayList<Message.Envelope> msgBuffer;
     @Getter
     private ArrayList<Message.Envelope> createdMessages;
+
+    @Getter
+    private Map<NodeID, Integer> weightMap;
 
     @Getter
     private int bufferMax;
@@ -82,6 +87,7 @@ public class Node implements Comparable<Node> {
         this.createdMessages = new ArrayList<Message.Envelope>();
         this.roundPoints = new ArrayList<Vector>();
         this.receivedMessages = new HashSet<Long>();
+        this.weightMap = new TreeMap<NodeID, Integer>();
         this.handler = handler;
     }
 
@@ -196,23 +202,36 @@ public class Node implements Comparable<Node> {
     private void retrieveMessages() {
         Message msg = null;
         while ((msg = device.recv()) != null) {
-            if (msg.getType() == Message.TYPE_ENVELOPE) {
-                val envelope = (Message.Envelope) msg;
-                acceptEnvelope(envelope);
-                msgBuffer.add(envelope);
+            // receivedMessagesにすでに存在する場合は、重なって受信してるので無視します
+            if (receivedMessages.contains(msg.getId())) {
+                continue;
+            }
+            receivedMessages.add(msg.getId());
+            switch (msg.getType()) {
+            case Message.TYPE_ENVELOPE:
+                handleEnvelope((Message.Envelope) msg);
+                break;
+            case Message.TYPE_TELLNEIGHBORS:
+                handleTellNeighbors((Message.TellNeighbors) msg);
+                break;
+            default:
+                log.warn("Unknown Message type : " + msg);
+                break;
             }
             handler.onReceived(this, msg);
         }
     }
 
-    private void acceptEnvelope(Message.Envelope msg) {
-        if (msg.getToId().equals(id)) {
-            if (!receivedMessages.contains(msg.getId())) {
-                receivedMessages.add(msg.getId());
-                session.onMessageReached(this, msg);
-            }
-            log.debug(String.format("MESSAGE ACCEPTED: [%s]", msg));
+    private void handleEnvelope(Message.Envelope envelope) {
+        if (envelope.getToId().equals(id)) {
+            session.onMessageAccepted(this, envelope);
+            log.debug(String.format("MESSAGE ACCEPTED: [%s]", envelope));
         }
+        msgBuffer.add(envelope);
+    }
+
+    private void handleTellNeighbors(Message.TellNeighbors packet) {
+
     }
 
     public void next(Session sess) {
