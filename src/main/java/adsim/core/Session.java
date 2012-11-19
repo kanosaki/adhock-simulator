@@ -87,6 +87,7 @@ public class Session {
     }
 
     public void start() {
+        log.info("Starting session..");
         try {
             while (step < stepLimit) {
                 next();

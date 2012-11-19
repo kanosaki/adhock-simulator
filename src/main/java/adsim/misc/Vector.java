@@ -67,6 +67,6 @@ public class Vector {
         double cos = Math.cos(theta);
         return new Vector(x * cos - y * sin, x * sin + y * cos);
     }
-
+    
     public static final Vector zero = new Vector(0, 0);
 }

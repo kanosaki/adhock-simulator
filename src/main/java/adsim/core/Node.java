@@ -155,7 +155,9 @@ public class Node implements Comparable<Node> {
      *            移動するベクトル
      */
     public void move(Vector v) {
-        device.setPosition(device.getPosition().add(v));
+        val point = device.getPosition().add(v);
+        device.setPosition(point);
+        log.debug(String.format("MOVE %s @ %s(delta %s)", this, point, v));
     }
 
     /**
@@ -166,6 +168,7 @@ public class Node implements Comparable<Node> {
      */
     public void moveTo(Vector v) {
         device.setPosition(v);
+        log.debug(String.format("MOVE %s @ %s", this, v));
     }
 
     public Vector getLocation() {

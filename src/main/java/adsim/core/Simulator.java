@@ -70,6 +70,8 @@ public class Simulator {
                 }
                 log.info("Simulator finisied.");
                 onCompleted();
+            } catch (Exception e) { // for debug // TODO REMOVE
+                e.printStackTrace();
             } finally {
                 onFinished();
             }
