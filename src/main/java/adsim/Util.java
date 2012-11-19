@@ -34,6 +34,18 @@ public class Util {
         return gaussianGenerator.nextNormalizedDouble() * sigma + mu;
     }
 
+    public static double getReflexiveGaussianPoint(double mu, double sigma,
+            double min, double max) {
+        if (max < min) {
+            throw new ArithmeticException();
+        }
+        double v = getGaussianPoint(mu, sigma);
+        while (v < min || max < v) {
+            v = getGaussianPoint(mu, sigma);
+        }
+        return v;
+    }
+
     public static Collection<INodeHandler> nodeHandlersClone(
             Collection<INodeHandler> handlers) {
         val ret = new ArrayList<INodeHandler>

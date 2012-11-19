@@ -15,6 +15,9 @@ public class Device {
     @Getter
     @Setter
     private double radioPower;
+    
+    @Setter @Getter
+    private double bound;
 
     private Queue<Message> sendQueue;
 

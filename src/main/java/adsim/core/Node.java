@@ -112,7 +112,6 @@ public class Node implements Comparable<Node> {
 
     public void broadcast(Message msg) {
         device.send(msg);
-        log.debug(String.format("MESSAGE SENT: <%s>[%s]", this, msg));
     }
 
     public void pushMessage(Message.Envelope packet) {
@@ -157,7 +156,6 @@ public class Node implements Comparable<Node> {
     public void move(Vector v) {
         val point = device.getPosition().add(v);
         device.setPosition(point);
-        log.debug(String.format("MOVE %s @ %s(delta %s)", this, point, v));
     }
 
     /**
@@ -168,7 +166,6 @@ public class Node implements Comparable<Node> {
      */
     public void moveTo(Vector v) {
         device.setPosition(v);
-        log.debug(String.format("MOVE %s @ %s", this, v));
     }
 
     public Vector getLocation() {
@@ -229,7 +226,6 @@ public class Node implements Comparable<Node> {
     private void handleEnvelope(Message.Envelope envelope) {
         if (envelope.getToId().equals(id)) {
             session.onMessageAccepted(this, envelope);
-            log.debug(String.format("MESSAGE ACCEPTED: [%s]", envelope));
         }
         msgBuffer.add(envelope);
     }

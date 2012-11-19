@@ -130,8 +130,10 @@ public class Session {
     }
 
     private Vector createRandomPoint() {
-        return new Vector(Math.random() * cas.getFieldSize(), Math.random()
-                * cas.getFieldSize());
+        val sz = cas.getFieldSize();
+        return new Vector(
+                Util.getReflexiveGaussianPoint(sz / 2, sz / 3, 0, sz),
+                Util.getReflexiveGaussianPoint(sz / 2, sz / 3, 0, sz));
     }
 
     private void registerRoundPoints() {
@@ -139,7 +141,8 @@ public class Session {
         long pointCount = getNodes().size() * 3;
         for (int i = 0; i < pointCount; i++) {
             val centerNodes = Util.randomSelect(getNodes());
-            recAppendRoundPoint(centerNodes, createRandomPoint(), groupHop,
+            val point = createRandomPoint();
+            recAppendRoundPoint(centerNodes, point, groupHop,
                     new TreeSet<Node>());
         }
     }

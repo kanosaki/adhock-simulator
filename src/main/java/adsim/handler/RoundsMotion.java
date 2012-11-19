@@ -35,6 +35,8 @@ public class RoundsMotion extends NodeHandlerBase {
 
     @Override
     public void interval(Session sess, Node node) {
+        if (node.getRoundPoints().size() < 2)
+            return;
         updateDestination(sess, node);
         Vector directVect = node.getCurrentDestination()
                 .sub(node.getLocation());

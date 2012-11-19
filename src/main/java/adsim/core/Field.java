@@ -33,11 +33,14 @@ public class Field {
     public void addDevice(Device dev) {
         if (dev == null)
             throw new IllegalArgumentException("dev is null");
+        dev.setBound(size);
         this.devices.add(dev);
     }
 
     public void addDevices(Collection<Device> devs) {
-        this.devices.addAll(devs);
+        for(val dev : devs) {
+            addDevice(dev);
+        }
     }
 
     public void next() {
