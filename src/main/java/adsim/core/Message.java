@@ -1,6 +1,7 @@
 package adsim.core;
 
 import lombok.*;
+import lombok.experimental.Value;
 import adsim.Util;
 
 public abstract class Message {
@@ -46,10 +47,9 @@ public abstract class Message {
         return true;
     }
 
+    @Value
     public static class Envelope extends Message {
-        @Getter
         private final NodeID fromId;
-        @Getter
         private final NodeID toId;
 
         public Envelope(NodeID from, NodeID to) {
@@ -69,7 +69,11 @@ public abstract class Message {
         }
     }
 
+    @Value
     public static class TellNeighbors extends Message {
+        private final NodeID sender;
+        private final int distance;
+
         @Override
         public int getType() {
             return TYPE_TELLNEIGHBORS;

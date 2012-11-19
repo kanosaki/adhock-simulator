@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -26,9 +27,9 @@ public class Node implements Comparable<Node> {
     private final NodeID id;
     @Getter
     private INodeHandler handler;
-    private final ArrayList<Message> msgBuffer;
+    private final ArrayList<Message.Envelope> msgBuffer;
     @Getter
-    private ArrayList<Message> createdMessages;
+    private ArrayList<Message.Envelope> createdMessages;
 
     @Getter
     private int bufferMax;
@@ -76,9 +77,9 @@ public class Node implements Comparable<Node> {
         this.id = id;
         this.setBufferMax(INITIAL_BUFFER_MAX);
         this.device = new Device();
-        this.msgBuffer = new ArrayList<Message>();
+        this.msgBuffer = new ArrayList<Message.Envelope>();
         this.friends = new ArrayList<Node>();
-        this.createdMessages = new ArrayList<Message>();
+        this.createdMessages = new ArrayList<Message.Envelope>();
         this.roundPoints = new ArrayList<Vector>();
         this.receivedMessages = new HashSet<Long>();
         this.handler = handler;
@@ -94,7 +95,7 @@ public class Node implements Comparable<Node> {
     // ------------------------------
     // --- interface for handlers ---
 
-    public List<Message> getBuffer() {
+    public List<Message.Envelope> getBuffer() {
         return msgBuffer;
     }
 
@@ -107,7 +108,7 @@ public class Node implements Comparable<Node> {
         log.debug(String.format("MESSAGE SENT: <%s>[%s]", this, msg));
     }
 
-    public void pushMessage(Message packet) {
+    public void pushMessage(Message.Envelope packet) {
         if (isBufferFilled()) {
             throw new IllegalStateException("Buffer is overloaded.");
         }
@@ -182,6 +183,10 @@ public class Node implements Comparable<Node> {
         fireSignal(name, sender, SignalArgs.Void);
     }
 
+    public void sortBuffer(Comparator<Message.Envelope> sortComparator) {
+        Collections.sort(msgBuffer, sortComparator);
+    }
+
     // --- interface for handlers END ---
     // ----------------------------------
 
@@ -191,12 +196,10 @@ public class Node implements Comparable<Node> {
     private void retrieveMessages() {
         Message msg = null;
         while ((msg = device.recv()) != null) {
-            if (msg instanceof Message.Envelope) {
-                acceptEnvelope((Message.Envelope) msg);
-            } else { // 自分宛ではない
-                // pushMessage経由では無く、容量を無視して追加します。
-                // handlerの中に不要メッセージを捨てるNodeHandlerがある必要があります
-                msgBuffer.add(msg);
+            if (msg.getType() == Message.TYPE_ENVELOPE) {
+                val envelope = (Message.Envelope) msg;
+                acceptEnvelope(envelope);
+                msgBuffer.add(envelope);
             }
             handler.onReceived(this, msg);
         }
