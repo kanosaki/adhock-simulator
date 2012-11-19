@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import adsim.core.Message.TellNeighbors;
 import adsim.handler.SignalArgs;
 import adsim.handler.VoidHandler;
 import adsim.misc.Vector;
@@ -231,7 +232,12 @@ public class Node implements Comparable<Node> {
     }
 
     private void handleTellNeighbors(Message.TellNeighbors packet) {
+        updateWeightMap(packet);
+    }
 
+    private void updateWeightMap(TellNeighbors packet) {
+        // ここでTellNeighborsパケットの距離値を減算します
+        weightMap.put(packet.getSender(), packet.getDistance() - 1);
     }
 
     public void next(Session sess) {

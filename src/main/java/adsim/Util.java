@@ -5,6 +5,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.math3.random.GaussianRandomGenerator;
@@ -88,6 +89,14 @@ public class Util {
                     return one;
                 }
             }
+        }
+    }
+
+    public static <K, V> V mapGet(Map<K, V> map, K key, V defaultValue) {
+        if (map.containsKey(key)) {
+            return map.get(key);
+        } else {
+            return defaultValue;
         }
     }
 }
