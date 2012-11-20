@@ -38,7 +38,7 @@ public class Field {
     }
 
     public void addDevices(Collection<Device> devs) {
-        for(val dev : devs) {
+        for (val dev : devs) {
             addDevice(dev);
         }
     }
@@ -48,13 +48,23 @@ public class Field {
     }
 
     private void dispathPackets() { // FIXME
-        for (int sent = 0; sent < MAX_SEND_COUNT; sent++) {
+        int sent = 0;
+        while (sent < MAX_SEND_COUNT) {
+            boolean anyoneSent = false;
             for (val dev : getDevices()) {
                 val request = dev.offerSend();
                 if (request != null) {
-                    sentCount += 1;
                     space.dispatch(dev, request);
+                    sentCount += 1;
+                    sent += 1;
+                    anyoneSent = true;
+                    if (sent >= MAX_SEND_COUNT) {
+                        break;
+                    }
                 }
+            }
+            if(!anyoneSent) {
+                break;
             }
         }
         for (val dev : getDevices()) {
