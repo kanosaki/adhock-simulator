@@ -77,18 +77,24 @@ public class Util {
         return lst.get(random.nextInt(lst.size()));
     }
 
+    public static <T> boolean contains(T[] xs, T a) {
+        for (T x : xs) {
+            if (x == null)
+                continue;
+            if (x.equals(a))
+                return true;
+        }
+        return false;
+    }
+
     public static <T> T randomSelectExcept(List<T> src, T... excepts) {
         // 無限ループを回避するためexpectsに含まれない要素が存在するか確かめます。
         boolean anotherContains = false;
         for (T one : src) {
-            for (T check : excepts) {
-                if (!one.equals(check)) {
-                    anotherContains = true;
-                    break;
-                }
-            }
-            if (anotherContains) // 余計なループを脱出
+            if (!Util.contains(excepts, one)) {
+                anotherContains = true;
                 break;
+            }
         }
         if (!anotherContains) {
             throw new IllegalArgumentException(
@@ -96,11 +102,14 @@ public class Util {
         }
         while (true) {
             T one = Util.randomSelect(src);
+            boolean checkok = true;
             for (T check : excepts) {
-                if (!one.equals(check)) {
-                    return one;
+                if (one.equals(check)) {
+                    checkok = false;
                 }
             }
+            if (checkok)
+                return one;
         }
     }
 
@@ -110,5 +119,9 @@ public class Util {
         } else {
             return defaultValue;
         }
+    }
+
+    public static boolean doubleCompare(double x, double y, double epsilon) {
+        return (x - epsilon < y) && (y < x + epsilon);
     }
 }

@@ -28,13 +28,20 @@ public class UtilTest {
                         .matches("adsim\\.UtilTest\\.test_getCodeInfo\\(UtilTest\\.java:\\d+\\)"));
     }
 
+    @Test
     public void test_randomSelectExcept() {
         List<Integer> src = Arrays.asList(1, 2, 3, 4);
         val res = Util.randomSelectExcept(src, 1, 2, 3);
-        assertEquals(res.intValue(), 1);
+        assertEquals(4, res.intValue());
 
         val res2 = Util.randomSelectExcept(src, 3, 4);
-        assertTrue(res.intValue() == 1 || res.intValue() == 2);
+        assertTrue(res2.intValue() == 1 || res2.intValue() == 2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_randomSelectExcept_fail() {
+        List<Integer> src = Arrays.asList(1, 2, 3, 4);
+        Util.randomSelectExcept(src, 1, 2, 3, 4);
     }
 
 }
