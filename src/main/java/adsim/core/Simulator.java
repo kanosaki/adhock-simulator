@@ -3,6 +3,7 @@ package adsim.core;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,6 +18,8 @@ public class Simulator {
     private boolean isStopInvoked;
 
     private Engine engine;
+
+    private long startTime;
 
     // Threadpool for Engine
     private static ExecutorService threadpool = Executors.newCachedThreadPool();
@@ -36,6 +39,7 @@ public class Simulator {
             throw new IllegalStateException("This simulator already closed.");
         log.info(String.format("Starting simulator with scenario '%s'",
                 scenario.getName()));
+        startTime = System.currentTimeMillis();
         this.engine.start();
     }
 
@@ -47,6 +51,9 @@ public class Simulator {
      * Called when Engine#run finished.
      */
     protected void onFinished() {
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        log.info(String.format("Simulator finisied. in %dms(%dsec)",
+                elapsedTime, elapsedTime / 1000));
         scenario.report();
     }
 
@@ -68,7 +75,6 @@ public class Simulator {
                 for (val cas : scenario.getCases()) {
                     new Session(cas).start();
                 }
-                log.info("Simulator finisied.");
                 onCompleted();
             } catch (Exception e) { // for debug // TODO REMOVE
                 e.printStackTrace();
