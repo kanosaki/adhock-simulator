@@ -137,8 +137,8 @@ public class Session {
     }
 
     private void registerRoundPoints() {
-        int groupHop = 3;
-        long pointCount = getNodes().size() * 3;
+        int groupHop = 1;
+        long pointCount = getNodes().size() / 2;
         for (int i = 0; i < pointCount; i++) {
             val centerNodes = Util.randomSelect(getNodes());
             val point = createRandomPoint();
