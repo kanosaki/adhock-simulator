@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * ISimulator implementation.
@@ -34,13 +35,13 @@ public class Simulator {
         this.isStopInvoked = true;
     }
 
-    public void start() {
+    public Future<?> start() {
         if (this.isStopInvoked)
             throw new IllegalStateException("This simulator already closed.");
         log.info(String.format("Starting simulator with scenario '%s'",
                 scenario.getName()));
         startTime = System.currentTimeMillis();
-        this.engine.start();
+        return this.engine.start();
     }
 
     private void init() {
@@ -65,8 +66,8 @@ public class Simulator {
     }
 
     class Engine implements Runnable {
-        public void start() {
-            threadpool.execute(this);
+        public Future<?> start() {
+            return threadpool.submit(this);
         }
 
         @Override

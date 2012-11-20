@@ -17,7 +17,7 @@ import adsim.handler.IntervalPublisher;
 
 public class FirstSample extends CompositeScenario {
     public static void main(String[] args) {
-        SimulatorService.start(new FirstSample());
+        SimulatorService.startAsync(new FirstSample());
     }
 
     public FirstSample() {
