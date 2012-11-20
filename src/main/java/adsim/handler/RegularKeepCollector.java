@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import adsim.Util;
 import adsim.core.Message;
 import adsim.core.Node;
 import adsim.core.NodeID;
@@ -29,12 +30,12 @@ public class RegularKeepCollector extends NodeHandlerBase {
             node.sortBuffer(new Comparator<Message.Envelope>() {
                 @Override
                 public int compare(Message.Envelope arg0, Message.Envelope arg1) {
-                    val dst0 = accumulator.get(arg0.getToId());
-                    val dst1 = accumulator.get(arg1.getToId());
+                    val dst0 = Util.mapGet(accumulator, arg0.getToId(), 0);
+                    val dst1 = Util.mapGet(accumulator, arg1.getToId(), 0);
                     return dst0 - dst1; // Ascend
                 }
             });
-            while(node.isBufferFilled()) {
+            while (node.isBufferFilled()) {
                 node.disposeMessage(0);
             }
         }
