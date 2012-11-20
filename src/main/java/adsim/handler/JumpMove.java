@@ -21,14 +21,14 @@ public class JumpMove extends NodeHandlerBase {
     @Override
     public void initialize(Node node) {
         if (triggerFrame == 0) {
-            node.moveTo(destination);
+            node.jump(destination);
         }
     }
 
     @Override
     public void interval(Session sess, Node node) {
         if (sess.getStep() == triggerFrame) {
-            node.moveTo(destination);
+            node.jump(destination);
         }
     }
 

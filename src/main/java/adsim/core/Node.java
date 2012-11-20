@@ -164,7 +164,7 @@ public class Node implements Comparable<Node> {
      * @param v
      *            移動先の位置
      */
-    public void moveTo(Vector v) {
+    public void jump(Vector v) {
         device.setPosition(v);
     }
 

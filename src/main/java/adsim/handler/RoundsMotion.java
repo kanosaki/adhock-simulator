@@ -17,18 +17,22 @@ public class RoundsMotion extends NodeHandlerBase {
     @Override
     public void initialize(Node node) {
         val initPoint = Util.randomSelect(node.getRoundPoints());
-        node.moveTo(initPoint);
-        node.setCurrentDestination(Util.randomSelectExcept(
-                node.getRoundPoints(), initPoint));
+        node.jump(initPoint);
+        if (node.getRoundPoints().size() >= 2) {
+            node.setCurrentDestination(Util.randomSelectExcept(
+                    node.getRoundPoints(), initPoint));
+        }
     }
 
     private void updateDestination(Session sess, Node node) {
+        if (node.getCurrentDestination() == null)
+            return;
         double distanceToDestination = node.getCurrentDestination().distance(
                 node.getLocation());
         // 目標地点に着いていると判定できる場合は、目的地を次の地点へ変更します
         if (distanceToDestination < POINT_RADIUS) {
             Vector nextPoint = Util.randomSelectExcept(node.getRoundPoints(),
-                    node.getCurrentDestination());
+                    node.getCurrentDestination(), node.getLocation());
             node.setCurrentDestination(nextPoint);
         }
     }
