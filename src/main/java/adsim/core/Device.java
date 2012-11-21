@@ -29,6 +29,11 @@ public class Device {
         this.sendQueue = new ConcurrentLinkedQueue<Message>();
         this.recvQueue = new ConcurrentLinkedQueue<Message>();
     }
+    
+    public Device(double radioPower) {
+        this();
+        this.radioPower = radioPower;
+    }
 
     public Message offerSend() {
         return this.sendQueue.poll();
