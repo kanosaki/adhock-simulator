@@ -100,7 +100,7 @@ public class Node implements Comparable<Node> {
     public void onSessionInitialized() {
         initLocation();
         handler.initialize(this);
-        log.info(String.format("%s ready. Friends:%d, RoundPoints:%d", this,
+        debug(String.format("%s ready. Friends:%d, RoundPoints:%d", this,
                 friends.size(),
                 roundPoints.size()));
     }
@@ -232,6 +232,7 @@ public class Node implements Comparable<Node> {
                 continue;
             }
             receivedMessages.add(msg.getId());
+            handler.onReceived(this, msg);
             switch (msg.getType()) {
             case Message.TYPE_ENVELOPE:
                 handleEnvelope((Message.Envelope) msg);
@@ -243,7 +244,6 @@ public class Node implements Comparable<Node> {
                 log.warn("Unknown Message type : " + msg);
                 break;
             }
-            handler.onReceived(this, msg);
         }
     }
 

@@ -86,12 +86,20 @@ public class Session {
     }
 
     public void next() {
-        log.debug("Step " + this.step);
         step += 1;
+        printProgress();
         for (val node : cas.getNodes()) {
             node.next(this);
         }
         this.field.next();
+    }
+
+    private void printProgress() {
+        val prevPercent = (int) ((((double) step - 1) / (double) stepLimit) * 100);
+        val thisPercent = (int) ((((double) step) / (double) stepLimit) * 100);
+        if (prevPercent / 10 < thisPercent / 10) {
+            log.info(String.format("%d%% Completed", thisPercent));
+        }
     }
 
     public void start() {
@@ -108,6 +116,9 @@ public class Session {
     }
 
     protected void onCompleted() {
+        log.info(String.format("Reach %d/%d(%f%%)", reachedMessagesCount,
+                createdMessagesCount, ((double) reachedMessagesCount) * 100
+                        / ((double) createdMessagesCount)));
         cas.tellResult(new ResultReport(createdMessagesCount,
                 reachedMessagesCount, field.getWholeSentCount(), field
                         .getWholeDisposedCount()));
