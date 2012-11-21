@@ -60,6 +60,14 @@ public class Session {
         for (val node : getNodes()) {
             node.onSessionInitialized();
         }
+        watchNode(1);
+    }
+
+    private void watchNode(int count) {
+        for (int i = 0; i < count; i++) {
+            val node = Util.randomSelect(getNodes());
+            node.setVerbose(true);
+        }
     }
 
     private void initField() {

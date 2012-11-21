@@ -60,6 +60,10 @@ public class Node implements Comparable<Node> {
 
     private HashSet<Long> receivedMessages;
 
+    @Getter
+    @Setter
+    private boolean verbose;
+
     // -----------------------
 
     protected static NodeID generateRandomId() {
@@ -111,6 +115,7 @@ public class Node implements Comparable<Node> {
     }
 
     public void broadcast(Message msg) {
+        debug("Broadcasting %s", msg);
         device.send(msg);
     }
 
@@ -118,6 +123,7 @@ public class Node implements Comparable<Node> {
         if (isBufferFilled()) {
             throw new IllegalStateException("Buffer is overloaded.");
         }
+        debug("PushMessage %s", packet);
         msgBuffer.add(packet);
     }
 
@@ -131,6 +137,7 @@ public class Node implements Comparable<Node> {
         if (session != null) {
             session.onMessageCreated(this, newmsg);
         }
+        debug("MessageCreated %s", newmsg);
         createdMessages.add(newmsg);
     }
 
@@ -144,6 +151,7 @@ public class Node implements Comparable<Node> {
     }
 
     public void disposeMessage(int index) {
+        debug("DisposingMessage at %d (%s)", index, msgBuffer.get(index));
         msgBuffer.remove(index);
     }
 
@@ -154,6 +162,7 @@ public class Node implements Comparable<Node> {
      *            移動するベクトル
      */
     public void move(Vector v) {
+        debug("Move %s", v);
         val point = device.getPosition().add(v);
         device.setPosition(point);
     }
@@ -165,6 +174,7 @@ public class Node implements Comparable<Node> {
      *            移動先の位置
      */
     public void jump(Vector v) {
+        debug("Jump %s", v);
         device.setPosition(v);
     }
 
@@ -183,6 +193,7 @@ public class Node implements Comparable<Node> {
      *            シグナルの引数
      */
     public void fireSignal(String name, INodeHandler sender, SignalArgs arg) {
+        debug("Signal %s from %s(arg: %s)", name, sender, arg);
         handler.onSignal(name, sender, arg);
     }
 
@@ -224,13 +235,16 @@ public class Node implements Comparable<Node> {
     }
 
     private void handleEnvelope(Message.Envelope envelope) {
+        debug("RecvEnvelope", envelope);
         if (envelope.getToId().equals(id)) {
+            debug("AcceptEnvelope %s", envelope);
             session.onMessageAccepted(this, envelope);
         }
         msgBuffer.add(envelope);
     }
 
     private void handleTellNeighbors(Message.TellNeighbors packet) {
+        debug("RecvTellNeighbors %s", packet);
         updateWeightMap(packet);
     }
 
@@ -265,5 +279,12 @@ public class Node implements Comparable<Node> {
     @Override
     public int compareTo(Node arg0) {
         return this.getId().compareTo(arg0.getId());
+    }
+
+    public void debug(String format, Object... args) {
+        if (verbose) {
+            val fmt = String.format("%s: %s", this, format);
+            log.debug(String.format(fmt, args));
+        }
     }
 }
