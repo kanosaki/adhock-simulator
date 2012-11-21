@@ -32,7 +32,9 @@ public class App {
             System.exit(-1);
         }
         val cases = new ArrayList<ICase>();
-        cases.add(new Case(10, 10, 0, CollectMode.RegularKeep));
+        val cas1 = new Case(100, 100, 0, CollectMode.RegularKeep, 1000);
+        cas1.setWatchNodeCount(0);
+        cases.add(cas1);
         val scenario = new CompositeScenario(cases, System.out);
         SimulatorService.start(scenario);
         System.exit(0);

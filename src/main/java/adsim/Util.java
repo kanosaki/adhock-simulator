@@ -14,6 +14,7 @@ import org.apache.commons.math3.random.Well19937c;
 
 import adsim.core.INodeHandler;
 import adsim.core.Node;
+import adsim.misc.Vector;
 
 public class Util {
     public static final boolean DEBUG = true;
@@ -123,5 +124,11 @@ public class Util {
 
     public static boolean doubleCompare(double x, double y, double epsilon) {
         return (x - epsilon < y) && (y < x + epsilon);
+    }
+
+    public static Vector createRandomPoint(double size) {
+        return new Vector(
+                Util.getReflexiveGaussianPoint(size / 2, size / 3, 0, size),
+                Util.getReflexiveGaussianPoint(size / 2, size / 3, 0, size));
     }
 }

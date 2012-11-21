@@ -39,6 +39,10 @@ public class Case implements ICase {
     @Getter
     private CollectMode collectMode;
 
+    @Getter
+    @Setter
+    private int watchNodeCount;
+
     private ArrayList<Node> nodes;
     private final LinkedBlockingQueue<Object[]> result;
 
@@ -51,9 +55,9 @@ public class Case implements ICase {
     }
 
     public Case(int nodesCount, double fieldSize, int spreadStep,
-            CollectMode collectMode) {
+            CollectMode collectMode, int stepLimit) {
         this();
-        this.stepLimit = DEFAULT_STEP_LIMIT;
+        this.stepLimit = stepLimit;
         this.fieldSize = fieldSize;
         this.spreadStep = spreadStep;
         this.collectMode = collectMode;

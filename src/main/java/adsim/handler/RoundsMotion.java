@@ -16,14 +16,7 @@ public class RoundsMotion extends NodeHandlerBase {
 
     @Override
     public void initialize(Node node) {
-        val initPoint = Util.randomSelect(node.getRoundPoints());
-        node.jump(initPoint);
-        if (node.getRoundPoints().size() >= 2) {
-            node.setCurrentDestination(Util.randomSelectExcept(
-                    node.getRoundPoints(), initPoint));
-        } else {
-            node.setCurrentDestination(initPoint);
-        }
+       
     }
 
     private void updateDestination(Session sess, Node node) {

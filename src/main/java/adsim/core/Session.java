@@ -60,7 +60,7 @@ public class Session {
         for (val node : getNodes()) {
             node.onSessionInitialized();
         }
-        watchNode(1);
+        watchNode(cas.getWatchNodeCount());
     }
 
     private void watchNode(int count) {
@@ -137,21 +137,19 @@ public class Session {
         }
     }
 
-    private Vector createRandomPoint() {
-        val sz = cas.getFieldSize();
-        return new Vector(
-                Util.getReflexiveGaussianPoint(sz / 2, sz / 3, 0, sz),
-                Util.getReflexiveGaussianPoint(sz / 2, sz / 3, 0, sz));
-    }
-
     private void registerRoundPoints() {
         int groupHop = 1;
         long pointCount = getNodes().size() / 2;
         for (int i = 0; i < pointCount; i++) {
             val centerNodes = Util.randomSelect(getNodes());
-            val point = createRandomPoint();
+            val point = Util.createRandomPoint(cas.getFieldSize());
             recAppendRoundPoint(centerNodes, point, groupHop,
                     new TreeSet<Node>());
+        }
+        for (val node : getNodes()) {
+            if (node.getRoundPoints().isEmpty()) {
+                node.addRoundPoint(Util.createRandomPoint(cas.getFieldSize()));
+            }
         }
     }
 

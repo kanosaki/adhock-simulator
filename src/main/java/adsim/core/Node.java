@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import adsim.Util;
 import adsim.core.Message.TellNeighbors;
 import adsim.handler.SignalArgs;
 import adsim.handler.VoidHandler;
@@ -97,10 +98,22 @@ public class Node implements Comparable<Node> {
     }
 
     public void onSessionInitialized() {
+        initLocation();
         handler.initialize(this);
         log.info(String.format("%s ready. Friends:%d, RoundPoints:%d", this,
                 friends.size(),
                 roundPoints.size()));
+    }
+
+    private void initLocation() {
+        val initPoint = Util.randomSelect(getRoundPoints());
+        jump(initPoint);
+        if (getRoundPoints().size() >= 2) {
+            setCurrentDestination(Util.randomSelectExcept(
+                    getRoundPoints(), initPoint));
+        } else {
+            setCurrentDestination(initPoint);
+        }
     }
 
     // ------------------------------

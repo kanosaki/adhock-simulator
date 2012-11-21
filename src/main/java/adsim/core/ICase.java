@@ -16,4 +16,6 @@ public interface ICase {
     Future<Object[]> getResult();
 
     void tellResult(ResultReport report);
+
+    int getWatchNodeCount();
 }
