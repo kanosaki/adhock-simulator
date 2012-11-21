@@ -14,14 +14,14 @@ public class FIFOCollector extends NodeHandlerBase {
 
     @Override
     public void interval(Session sess, Node node) {
-
+        while (node.isBufferFilled()) {
+            node.disposeMessage(0);
+        }
     }
 
     @Override
     public void onReceived(Node self, Message packet) {
-        while (self.isBufferFilled()) {
-            self.disposeMessage(0);
-        }
+
     }
 
     public INodeHandler clone() {
