@@ -7,7 +7,7 @@ import lombok.*;
 import adsim.misc.Vector;
 
 public class Device {
-    public static final double DEFAULT_INITIAL_RADIOOOWER = 1000.0;
+    public static final double DEFAULT_INITIAL_RADIOOOWER = 10.0;
     @Getter
     @Setter
     private Vector position;
