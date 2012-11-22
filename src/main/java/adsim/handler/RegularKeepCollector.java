@@ -11,6 +11,7 @@ import adsim.core.Message;
 import adsim.core.Node;
 import adsim.core.NodeID;
 import adsim.core.Session;
+import adsim.core.Message.TellNeighbors;
 
 public class RegularKeepCollector extends NodeHandlerBase {
     private Map<NodeID, Integer> accumulator;
@@ -41,16 +42,21 @@ public class RegularKeepCollector extends NodeHandlerBase {
         }
     }
 
+    private void updateEntry(TellNeighbors.Entry entry) {
+        if (!accumulator.containsKey(entry.getSender())) {
+            accumulator.put(entry.getSender(), entry.getWeight());
+        } else {
+            val sender = entry.getSender();
+            val updatedValue = accumulator.get(sender) + entry.getWeight();
+            accumulator.put(sender, updatedValue);
+        }
+    }
+
     @Override
     public void onReceived(Node self, Message packet) {
         if (packet.getType() == Message.TYPE_TELLNEIGHBORS) {
-            val msg = (Message.TellNeighbors) packet;
-            if (!accumulator.containsKey(msg.getSender())) {
-                accumulator.put(msg.getSender(), msg.getDistance());
-            } else {
-                val sender = msg.getSender();
-                val updatedValue = accumulator.get(sender) + msg.getDistance();
-                accumulator.put(sender, updatedValue);
+            for (val entry : ((TellNeighbors) packet).getEntries()) {
+                updateEntry(entry);
             }
         }
     }

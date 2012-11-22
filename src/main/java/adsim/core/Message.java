@@ -2,6 +2,11 @@ package adsim.core;
 
 import lombok.*;
 import lombok.experimental.Value;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import adsim.Util;
 
 public abstract class Message {
@@ -69,15 +74,45 @@ public abstract class Message {
         }
     }
 
-    @Value
     public static class TellNeighbors extends Message {
-        private final NodeID sender;
-        private final int distance;
+        @Getter
+        private final List<Entry> entries;
+
+        public TellNeighbors(Collection<Entry> entries) {
+            this.entries = new ArrayList<Entry>(entries);
+        }
+
+        public void add(Entry entry) {
+            entries.add(entry);
+        }
+
+        public void add(NodeID id, int distance) {
+            val entry = new Entry(id, distance, new Date().getTime());
+        }
 
         @Override
         public int getType() {
             return TYPE_TELLNEIGHBORS;
         }
 
+        @Value
+        public static class Entry {
+            private final NodeID sender;
+            private final int weight;
+            private final long timestamp;
+            
+            public Entry step() {
+                return new Entry(sender, weight -1, timestamp);
+            }
+
+            public Entry update(Entry other) {
+                if (other.getSender().equals(sender)
+                        && other.getTimestamp() > timestamp) {
+                    return other;
+                } else {
+                    return this;
+                }
+            }
+        }
     }
 }

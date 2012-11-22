@@ -2,6 +2,7 @@ package adsim.handler;
 
 import lombok.*;
 import adsim.core.Message;
+import adsim.core.Message.TellNeighbors;
 import adsim.core.Node;
 import adsim.core.Session;
 
@@ -15,19 +16,18 @@ public class InfoSpreader extends NodeHandlerBase {
 
     @Override
     public void initialize(Node node) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void interval(Session sess, Node node) {
-        // TODO Auto-generated method stub
-
+        val packet = (TellNeighbors)node.getWeightsMap().export(node);
+        packet.add(node.getId(), depth);
+        node.broadcast(packet);
     }
 
     @Override
     public void onReceived(Node self, Message packet) {
-        // TODO Auto-generated method stub
 
     }
 

@@ -22,9 +22,9 @@ public class RecentKeepCollector extends NodeHandlerBase {
             node.sortBuffer(new Comparator<Message.Envelope>() {
                 @Override
                 public int compare(Envelope o1, Envelope o2) {
-                    val map = node.getWeightMap();
-                    val v1 = Util.mapGet(map, o1.getToId(), 0);
-                    val v2 = Util.mapGet(map, o2.getToId(), 0);
+                    val map = node.getWeightsMap();
+                    val v1 = map.get(o1.getToId());
+                    val v2 = map.get(o2.getToId());
                     return v1 - v2;
                 }
             });

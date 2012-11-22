@@ -21,6 +21,7 @@ import adsim.misc.Vector;
 @Slf4j
 public class Node implements Comparable<Node> {
     public static final int INITIAL_BUFFER_MAX = 10;
+    public static final int WEIGHT_BUFFER_MAX = 100;
 
     // -- Signals --
     public static final String SIGNAL_COLLECT_BUFFER = "Node/RequestCollectBuffer";
@@ -36,7 +37,7 @@ public class Node implements Comparable<Node> {
     private ArrayList<Message.Envelope> createdMessages;
 
     @Getter
-    private Map<NodeID, Integer> weightMap;
+    private RelationWeightManager weightsMap;
 
     @Getter
     private int bufferMax;
@@ -93,7 +94,7 @@ public class Node implements Comparable<Node> {
         this.createdMessages = new ArrayList<Message.Envelope>();
         this.roundPoints = new ArrayList<Vector>();
         this.receivedMessages = new HashSet<Long>();
-        this.weightMap = new TreeMap<NodeID, Integer>();
+        this.weightsMap = new RelationWeightManager(INITIAL_BUFFER_MAX);
         this.handler = handler;
     }
 
@@ -256,15 +257,11 @@ public class Node implements Comparable<Node> {
         msgBuffer.add(envelope);
     }
 
-    private void handleTellNeighbors(Message.TellNeighbors packet) {
+    private void handleTellNeighbors(TellNeighbors packet) {
         debug("RecvTellNeighbors %s", packet);
-        updateWeightMap(packet);
+        weightsMap.push(packet);
     }
 
-    private void updateWeightMap(TellNeighbors packet) {
-        // ここでTellNeighborsパケットの距離値を減算します
-        weightMap.put(packet.getSender(), packet.getDistance() - 1);
-    }
 
     public void next(Session sess) {
         retrieveMessages();
