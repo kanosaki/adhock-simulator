@@ -55,7 +55,7 @@ public class Case implements ICase {
     }
 
     public Case(int nodesCount, double fieldSize, int spreadStep,
-            CollectMode collectMode, int stepLimit) {
+            CollectMode collectMode, int stepLimit, double publishPerStep) {
         this();
         this.stepLimit = stepLimit;
         this.fieldSize = fieldSize;
@@ -69,7 +69,7 @@ public class Case implements ICase {
         }
         handlers.add(collectMode.toHandler());
         handlers.add(new FloodingReplayer());
-        handlers.add(new IntervalPublisher(10));
+        handlers.add(new IntervalPublisher(publishPerStep));
         val handler = new CompositeNodeHandler(handlers).prune();
         this.nodes = new ArrayList<Node>(nodesCount);
         for (int i = 0; i < nodesCount; i++) {

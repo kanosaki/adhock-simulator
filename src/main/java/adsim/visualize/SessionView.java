@@ -2,6 +2,8 @@ package adsim.visualize;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
@@ -18,6 +20,7 @@ public class SessionView extends JPanel {
     private static final long serialVersionUID = 1L;
     private Session model;
     private double scale = 0.5;
+    private Set<Node> watchNodes;
 
     public SessionView() {
 
@@ -25,6 +28,7 @@ public class SessionView extends JPanel {
 
     public SessionView(Session model) {
         this.model = model;
+        this.watchNodes = new HashSet<Node>();
         model.setInterval(100);
         model.addOnNextHandler(new SignalHandler<Long>() {
             @Override
@@ -32,6 +36,14 @@ public class SessionView extends JPanel {
                 repaint();
             }
         });
+        
+        // steal verbose flag to prevent long long log output.
+        for(Node node : model.getNodes()) {
+            if(node.isVerbose()) {
+                watchNodes.add(node);
+                node.setVerbose(false);
+            }
+        }
     }
 
     private Vector fixScale(Vector v) {
@@ -48,7 +60,7 @@ public class SessionView extends JPanel {
         Field field = model.getField();
         for (Node node : model.getNodes()) {
             Device dev = node.getDevice();
-            if (node.isVerbose()) {
+            if (watchNodes.contains(node)) {
                 ga.setColor(Color.RED);
                 for (Vector v : node.getRoundPoints()) {
                     ga.drawCircle(fixScale(v), RoundsMotion.POINT_RADIUS);

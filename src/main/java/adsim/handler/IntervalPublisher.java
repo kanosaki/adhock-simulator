@@ -11,8 +11,8 @@ public class IntervalPublisher extends NodeHandlerBase {
     private int interval;
     private int count;
 
-    public IntervalPublisher(int interval) {
-        this.interval = interval;
+    public IntervalPublisher(double publishPerStep) {
+        this.interval = (int) Math.round(1.0 / publishPerStep);
         this.count = 0;
     }
 
@@ -29,11 +29,12 @@ public class IntervalPublisher extends NodeHandlerBase {
 
     @Override
     public void interval(Session sess, Node node) {
-        if (count == interval) {
+        if (count == 0) {
             pushNext(node);
-            count = 0;
         }
         count += 1;
+        if (count == interval)
+            count = 0;
     }
 
     @Override
