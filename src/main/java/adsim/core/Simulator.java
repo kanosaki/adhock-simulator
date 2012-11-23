@@ -3,10 +3,15 @@ package adsim.core;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ISimulator implementation.
@@ -26,7 +31,7 @@ public class Simulator {
     private Session currentSession;
 
     // Threadpool for Engine
-    private static ExecutorService threadpool = Executors.newCachedThreadPool();
+    private static ExecutorService threadpool = Executors.newFixedThreadPool(4);
 
     public Simulator(IScenario scenario) {
         this.isStopInvoked = false;
@@ -69,23 +74,45 @@ public class Simulator {
     }
 
     class Engine implements Runnable {
+        List<Future<Object>> fTasks;
         public Future<?> start() {
-            return threadpool.submit(this);
+            val tasks = new ArrayList<Callable<Object>>(scenario.getCases()
+                    .size());
+            for (val cas : scenario.getCases()) {
+                tasks.add(new Callable<Object>() {
+                    @Override
+                    public Object call() {
+                        val session = new Session(cas);
+                        session.start();
+                        return null;
+                    }
+                });
+            }
+            List<Future<Object>> futures;
+            try {
+                futures = threadpool.invokeAll(tasks);
+                fTasks = futures;
+                threadpool.submit(this);
+                return futures.get(tasks.size() - 1);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
         public void run() {
             try {
-                for (val cas : scenario.getCases()) {
-                    currentSession = new Session(cas);
-                    currentSession.start();
+                for(val f : fTasks) {
+                    f.get();
                 }
-                onCompleted();
-            } catch (Exception e) { // for debug // TODO REMOVE
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-            } finally {
-                onFinished();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
+            onFinished();
         }
     }
 }

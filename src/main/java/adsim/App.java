@@ -2,6 +2,7 @@ package adsim;
 
 import lombok.*;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import lombok.*;
 
@@ -14,6 +15,7 @@ import adsim.core.Case;
 import adsim.core.Case.CollectMode;
 import adsim.core.CompositeScenario;
 import adsim.core.ICase;
+import adsim.misc.Param;
 
 /**
  * Simulator entry point
@@ -31,13 +33,20 @@ public class App {
             System.out.println(e.getMessage());
             System.exit(-1);
         }
-        val cases = new ArrayList<ICase>();
-        val cas1 = new Case(100, 100, 0, CollectMode.RegularKeep, 1000);
-        cas1.setWatchNodeCount(0);
-        cases.add(cas1);
+        Collection<ICase> cases = ScenarioBuilder.buildCase(
+                Param.enumerate(10, 100, 1000),
+                Param.enumerate(10.0, 100.0, 1000.0), Param.enumerate(0),
+                Param.enumerate(CollectMode.FIFO),
+                Param.enumerate(1000), Param.enumerate(0.01));
+
+        // val cases = new ArrayList<ICase>();
+        // val cas1 = new Case(100, 1000, 1, CollectMode.RecentKeep, 100000,
+        // 0.01);
+        // cas1.setWatchNodeCount(0);
+        // cases.add(cas1);
         val scenario = new CompositeScenario(cases, System.out);
-        SimulatorService.start(scenario);
-        System.exit(0);
+        SimulatorService.start(scenario, false);
+        // System.exit(0);
     }
 
     /*
