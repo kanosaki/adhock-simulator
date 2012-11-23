@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import adsim.Util;
+import adsim.misc.Signal;
+import adsim.misc.SignalHandler;
 import adsim.misc.Vector;
 
 @Slf4j
@@ -31,6 +33,12 @@ public class Session {
     @Getter
     private long reachedMessagesCount;
 
+    private Signal<Long> onNext;
+
+    @Getter
+    @Setter
+    private int interval;
+
     public List<Node> getNodes() {
         return cas.getNodes();
     }
@@ -43,6 +51,8 @@ public class Session {
         this.field = new Field(cas.getFieldSize());
         this.step = 0;
         this.stepLimit = cas.getStepLimit();
+        this.onNext = new Signal.Sync<Long>();
+        this.interval = 0;
         stepCheck();
         init();
         log.debug("Session for " + cas.toString() + " initialized");
@@ -106,7 +116,16 @@ public class Session {
         log.info("Starting session..");
         try {
             while (step < stepLimit) {
+                if (onNext.hasHandler())
+                    onNext.fire(this, new Long(step));
                 next();
+                if (interval != 0) {
+                    try {
+                        Thread.sleep(interval);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             onCompleted();
             log.info("Session finished.");
@@ -184,4 +203,9 @@ public class Session {
     public void onMessageAccepted(Node node, Message msg) {
         reachedMessagesCount += 1;
     }
+
+    public void addOnNextHandler(SignalHandler<Long> handler) {
+        onNext.register(handler);
+    }
+
 }

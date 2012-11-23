@@ -39,6 +39,10 @@ public class Vector {
         return new Vector((getX() * len) / norm, (getY() * len) / norm);
     }
 
+    public Vector scale(double scale) {
+        return new Vector(getX() * scale, getY() * scale);
+    }
+
     public Vector normalize() {
         double norm = getNorm();
         if (norm == 0)
@@ -99,4 +103,5 @@ public class Vector {
         result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
+
 }

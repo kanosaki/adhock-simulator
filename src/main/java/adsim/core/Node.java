@@ -42,7 +42,7 @@ public class Node implements Comparable<Node> {
     @Getter
     private int bufferMax;
 
-    @Getter(value = AccessLevel.PROTECTED)
+    @Getter
     private Device device;
 
     @Getter
@@ -146,13 +146,14 @@ public class Node implements Comparable<Node> {
      * 
      * @return 作成されたメッセージ
      */
-    public void createMessage(Node node) {
+    public Message createMessage(Node node) {
         val newmsg = new Message.Envelope(getId(), node.getId());
         if (session != null) {
             session.onMessageCreated(this, newmsg);
         }
         debug("MessageCreated %s", newmsg);
         createdMessages.add(newmsg);
+        return newmsg;
     }
 
     /**

@@ -22,6 +22,9 @@ public class Simulator {
 
     private long startTime;
 
+    @Getter
+    private Session currentSession;
+
     // Threadpool for Engine
     private static ExecutorService threadpool = Executors.newCachedThreadPool();
 
@@ -74,7 +77,8 @@ public class Simulator {
         public void run() {
             try {
                 for (val cas : scenario.getCases()) {
-                    new Session(cas).start();
+                    currentSession = new Session(cas);
+                    currentSession.start();
                 }
                 onCompleted();
             } catch (Exception e) { // for debug // TODO REMOVE

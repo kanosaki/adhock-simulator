@@ -23,7 +23,8 @@ public class IntervalPublisher extends NodeHandlerBase {
 
     private void pushNext(Node node) {
         val destNode = Util.randomSelect(node.getFriends());
-        node.createMessage(destNode);
+        val msg = node.createMessage(destNode);
+        node.broadcast(msg);
     }
 
     @Override
