@@ -2,20 +2,32 @@ package adsim.core;
 
 import lombok.*;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import adsim.core.Message.TellNeighbors;
 import adsim.core.Message.TellNeighbors.Entry;
 
 public class RelationWeightManager {
-    private SortedMap<NodeID, Entry> entries;
+    private Map<NodeID, Entry> entries;
+    private PriorityQueue<Entry> entryQueue;
     private final int capacity;
 
     public RelationWeightManager(int capacity) {
         this.capacity = capacity;
-        entries = new TreeMap<NodeID, Entry>();
+        entryQueue = new PriorityQueue<Entry>(capacity,
+                new Comparator<Entry>() {
+                    @Override
+                    public int compare(Entry o1, Entry o2) {
+                        return o1.getWeight() - o2.getWeight();
+                    }
+                });
+        entries = new HashMap<NodeID, Entry>((int) (capacity * 1.6));
     }
 
     public void push(TellNeighbors packet) {
@@ -30,11 +42,12 @@ public class RelationWeightManager {
 
     private void storeNew(Entry entry) {
         while (entries.size() >= capacity) {
-            entries.remove(entries.lastKey());
+            entries.remove(entryQueue.poll());
         }
         if (entry.getWeight() <= 0)
             return;
         entries.put(entry.getSender(), entry);
+        entryQueue.add(entry);
     }
 
     private void updateInfo(Entry entry) {

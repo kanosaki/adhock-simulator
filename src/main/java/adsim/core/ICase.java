@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 public interface ICase {
+    int getId();
+
+    int getTryId();
+
     // nodes, defaultNodeHandler,
     List<Node> getNodes();
 

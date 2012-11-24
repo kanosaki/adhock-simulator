@@ -21,6 +21,11 @@ import adsim.handler.RoundsMotion;
 
 public class Case implements ICase {
     public static final int DEFAULT_STEP_LIMIT = 100;
+    @Getter
+    private int id;
+    
+    @Getter
+    private int tryId;
 
     @Getter
     @Setter
@@ -54,9 +59,12 @@ public class Case implements ICase {
         this.fieldSize = 1000;
     }
 
-    public Case(int nodesCount, double fieldSize, int spreadStep,
+    public Case(int id, int inTypeId, int nodesCount, double fieldSize,
+            int spreadStep,
             CollectMode collectMode, int stepLimit, double publishPerStep) {
         this();
+        this.id = id;
+        this.tryId = inTypeId;
         this.stepLimit = stepLimit;
         this.fieldSize = fieldSize;
         this.spreadStep = spreadStep;
@@ -94,6 +102,8 @@ public class Case implements ICase {
     public void tellResult(ResultReport report) {
         try {
             result.put(new Object[] {
+                    id,
+                    tryId,
                     nodes.size(),
                     fieldSize,
                     collectMode,

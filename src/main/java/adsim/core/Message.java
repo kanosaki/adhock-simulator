@@ -88,6 +88,7 @@ public abstract class Message {
 
         public void add(NodeID id, int distance) {
             val entry = new Entry(id, distance, new Date().getTime());
+            entries.add(entry);
         }
 
         @Override
@@ -100,9 +101,9 @@ public abstract class Message {
             private final NodeID sender;
             private final int weight;
             private final long timestamp;
-            
+
             public Entry step() {
-                return new Entry(sender, weight -1, timestamp);
+                return new Entry(sender, weight - 1, timestamp);
             }
 
             public Entry update(Entry other) {
@@ -113,6 +114,19 @@ public abstract class Message {
                     return this;
                 }
             }
+        }
+
+        public String prettyPrint() {
+            val sb = new StringBuilder();
+            sb.append("[TellNaighbors :");
+            for (val e : getEntries()) {
+                sb.append(" ");
+                sb.append(e.sender.shortToString());
+                sb.append("-");
+                sb.append(e.weight);
+            }
+            sb.append("]");
+            return sb.toString();
         }
     }
 }

@@ -1,8 +1,11 @@
 package adsim.handler;
 
+import java.util.Collections;
+
 import lombok.*;
 import adsim.core.INodeHandler;
 import adsim.core.Message;
+import adsim.core.Message.TellNeighbors;
 import adsim.core.Node;
 import adsim.core.Session;
 
@@ -39,10 +42,23 @@ public class FloodingReplayer extends NodeHandlerBase {
         }
     }
 
+    private void onTellNeighbors(Node self, TellNeighbors msg) {
+        val buffer = self.getBuffer();
+        for (val nbEntry : msg.getEntries()) {
+            for (val bufMsg : buffer) {
+                if (bufMsg.getToId().equals(nbEntry.getSender())) {
+                    self.broadcast(bufMsg);
+                }
+            }
+        }
+    }
+
     @Override
     public void onReceived(Node self, Message packet) {
-        // Do nothing
-
+        if (packet.getType() == Message.TYPE_TELLNEIGHBORS) {
+            val tn = (TellNeighbors) packet;
+            onTellNeighbors(self, tn);
+        }
     }
 
     @Override

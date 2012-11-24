@@ -20,7 +20,7 @@ import adsim.misc.Vector;
 
 @Slf4j
 public class Node implements Comparable<Node> {
-    public static final int INITIAL_BUFFER_MAX = 10;
+    public static final int INITIAL_BUFFER_MAX = 100;
     public static final int WEIGHT_BUFFER_MAX = 100;
 
     // -- Signals --

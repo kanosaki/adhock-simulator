@@ -40,7 +40,7 @@ public class CompositeScenario implements IScenario {
     @Override
     public void report() {
         val headers = new String[] {
-                "Nodes", "FieldSize", "CollectMode", "SpreadDepth", "Created Messages", "Received Messages", "Sent Packets", "Disposed Packets"
+                "ID", "TryID", "Nodes", "FieldSize", "CollectMode", "SpreadDepth", "Created Messages", "Received Messages", "Sent Packets", "Disposed Packets"
         };
         val reporter = new Reporter(headers);
         for (val cas : cases) {

@@ -108,12 +108,12 @@ public class Session {
         val prevPercent = (int) ((((double) step - 1) / (double) stepLimit) * 100);
         val thisPercent = (int) ((((double) step) / (double) stepLimit) * 100);
         if (prevPercent / 10 < thisPercent / 10) {
-            log.info(String.format("%d%% Completed", thisPercent));
+            //log.info(String.format("%d%% Completed", thisPercent));
         }
     }
 
     public void start() {
-        log.info("Starting session..");
+        log.info("Starting session. - ID:" + cas.getId());
         try {
             while (step < stepLimit) {
                 if (onNext.hasHandler())

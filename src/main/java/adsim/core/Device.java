@@ -1,5 +1,6 @@
 package adsim.core;
 
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -15,8 +16,9 @@ public class Device {
     @Getter
     @Setter
     private double radioPower;
-    
-    @Setter @Getter
+
+    @Setter
+    @Getter
     private double bound;
 
     private Queue<Message> sendQueue;
@@ -26,10 +28,10 @@ public class Device {
     public Device() {
         this.position = Vector.zero;
         this.radioPower = DEFAULT_INITIAL_RADIOOOWER;
-        this.sendQueue = new ConcurrentLinkedQueue<Message>();
-        this.recvQueue = new ConcurrentLinkedQueue<Message>();
+        this.sendQueue = new LinkedList<Message>();
+        this.recvQueue = new LinkedList<Message>();
     }
-    
+
     public Device(double radioPower) {
         this();
         this.radioPower = radioPower;
@@ -55,8 +57,8 @@ public class Device {
         val newone = new Device();
         newone.position = this.position;
         newone.radioPower = this.radioPower;
-        newone.sendQueue = new ConcurrentLinkedQueue<Message>(sendQueue);
-        newone.recvQueue = new ConcurrentLinkedQueue<Message>(recvQueue);
+        newone.sendQueue = new LinkedList<Message>(sendQueue);
+        newone.recvQueue = new LinkedList<Message>(recvQueue);
         return newone;
     }
 

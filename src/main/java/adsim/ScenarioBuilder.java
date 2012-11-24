@@ -12,10 +12,12 @@ import adsim.core.Case.CollectMode;
 import adsim.misc.Param;
 
 public class ScenarioBuilder {
-    public static Collection<ICase> buildCase(Param<Integer> nodeNums,
+    public static Collection<ICase> buildCase(int tryPerCase,
+            Param<Integer> nodeNums,
             Param<Double> fieldSizes, Param<Integer> spreadStepNums,
             Param<CollectMode> modes, Param<Integer> stepLimits,
             Param<Double> publishPerSteps) {
+        int id = 0;
         val ret = new LinkedList<ICase>();
         for (val nodeCount : nodeNums) {
             for (val fieldSize : fieldSizes) {
@@ -23,9 +25,12 @@ public class ScenarioBuilder {
                     for (val mode : modes) {
                         for (val stepLimit : stepLimits) {
                             for (val publishPerStep : publishPerSteps) {
-                                ret.add(new Case(nodeCount, fieldSize,
-                                        spreadStepNum, mode, stepLimit,
-                                        publishPerStep));
+                                for (int inTypeID = 0; inTypeID < tryPerCase; inTypeID++) {
+                                    ret.add(new Case(id, inTypeID, nodeCount, fieldSize,
+                                            spreadStepNum, mode, stepLimit,
+                                            publishPerStep));
+                                    id += 1;
+                                }
                             }
                         }
                     }

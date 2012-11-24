@@ -88,12 +88,10 @@ public class Simulator {
                     }
                 });
             }
-            List<Future<Object>> futures;
             try {
-                futures = threadpool.invokeAll(tasks);
-                fTasks = futures;
+                fTasks = threadpool.invokeAll(tasks);
                 threadpool.submit(this);
-                return futures.get(tasks.size() - 1);
+                return fTasks.get(fTasks.size() - 1);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
