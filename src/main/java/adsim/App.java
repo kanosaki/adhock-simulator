@@ -72,7 +72,7 @@ public class App {
                 Param.enumerate(1000.0), Param.enumerate(3),
                 Param.enumerate(
                         CollectMode.RegularKeep),
-                Param.enumerate(10000), Param.enumerate(0.01));
+                Param.enumerate(1000), Param.enumerate(0.01));
     }
 
     /*
