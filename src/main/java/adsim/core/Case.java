@@ -23,7 +23,7 @@ public class Case implements ICase {
     public static final int DEFAULT_STEP_LIMIT = 100;
     @Getter
     private int id;
-    
+
     @Getter
     private int tryId;
 
@@ -113,9 +113,17 @@ public class Case implements ICase {
                     report.getPacketsSentCount(),
                     report.getPacketsDisposedCount()
             });
+            nodes = null;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "[Case Node: %d, Field: %f, Mode: %s, Spread: %d]",
+                nodes.size(), fieldSize, collectMode, spreadStep);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class Session {
         return cas.getNodes();
     }
 
-    private final @Getter
+    private @Getter
     Field field;
 
     public Session(ICase cas) {
@@ -108,7 +108,7 @@ public class Session {
         val prevPercent = (int) ((((double) step - 1) / (double) stepLimit) * 100);
         val thisPercent = (int) ((((double) step) / (double) stepLimit) * 100);
         if (prevPercent / 10 < thisPercent / 10) {
-            //log.info(String.format("%d%% Completed", thisPercent));
+            // log.info(String.format("%d%% Completed", thisPercent));
         }
     }
 
@@ -141,6 +141,7 @@ public class Session {
         cas.tellResult(new ResultReport(createdMessagesCount,
                 reachedMessagesCount, field.getWholeSentCount(), field
                         .getWholeDisposedCount()));
+        field = null;
     }
 
     /**

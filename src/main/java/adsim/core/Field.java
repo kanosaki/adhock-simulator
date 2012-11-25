@@ -8,7 +8,7 @@ import java.util.Random;
 import lombok.*;
 
 public class Field {
-    public static final int MAX_SEND_COUNT = 1000;
+    public static final int MAX_SEND_COUNT = 2000;
     private final @Getter
     SpaceMediator space = initSpace();
     private double size;
