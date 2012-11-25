@@ -10,14 +10,15 @@ import adsim.Util;
 import adsim.core.Message;
 import adsim.core.Node;
 import adsim.core.NodeID;
+import adsim.core.RelationWeightManager;
 import adsim.core.Session;
 import adsim.core.Message.TellNeighbors;
 
 public class RegularKeepCollector extends NodeHandlerBase {
-    private Map<NodeID, Integer> accumulator;
+    private RelationWeightManager accumlator;
 
     public RegularKeepCollector() {
-        accumulator = new TreeMap<NodeID, Integer>();
+        accumlator = new RelationWeightManager.Regular(Node.WEIGHT_BUFFER_MAX);
     }
 
     @Override
@@ -31,9 +32,8 @@ public class RegularKeepCollector extends NodeHandlerBase {
             node.sortBuffer(new Comparator<Message.Envelope>() {
                 @Override
                 public int compare(Message.Envelope arg0, Message.Envelope arg1) {
-                    val dst0 = Util.mapGet(accumulator, arg0.getToId(), -1);
-                    val dst1 = Util.mapGet(accumulator, arg1.getToId(), -1);
-                    return dst0 - dst1; // Ascend
+                    return accumlator.get(arg0.getToId())
+                            - accumlator.get(arg1.getToId());
                 }
             });
             while (node.isBufferFilled()) {
@@ -42,22 +42,10 @@ public class RegularKeepCollector extends NodeHandlerBase {
         }
     }
 
-    private void updateEntry(TellNeighbors.Entry entry) {
-        if (!accumulator.containsKey(entry.getSender())) {
-            accumulator.put(entry.getSender(), entry.getWeight());
-        } else {
-            val sender = entry.getSender();
-            val updatedValue = accumulator.get(sender) + entry.getWeight();
-            accumulator.put(sender, updatedValue);
-        }
-    }
-
     @Override
     public void onReceived(Node self, Message packet) {
         if (packet.getType() == Message.TYPE_TELLNEIGHBORS) {
-            for (val entry : ((TellNeighbors) packet).getEntries()) {
-                updateEntry(entry);
-            }
+            accumlator.push((TellNeighbors) packet);
         }
     }
 
