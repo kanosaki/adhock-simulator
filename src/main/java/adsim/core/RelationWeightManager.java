@@ -13,23 +13,21 @@ import java.util.Queue;
 import adsim.core.Message.TellNeighbors;
 import adsim.core.Message.TellNeighbors.Entry;
 
-public class RelationWeightManager {
-    private Map<NodeID, Entry> entries;
-    private PriorityQueue<Entry> entryQueue;
-    private final int capacity;
+public abstract class RelationWeightManager {
+    protected Map<NodeID, Entry> entries;
+    protected PriorityQueue<Entry> entryQueue;
+    protected final int capacity;
     public static final int DEFAULT_WEIGHT = -1;
+
+    protected abstract Comparator<Entry> getComparator();
+
+    protected abstract boolean isIgnoreEntry(Entry entry);
+
+    protected abstract Entry updateEntry(Entry one, Entry other);
 
     public RelationWeightManager(int capacity) {
         this.capacity = capacity;
-        entryQueue = new PriorityQueue<Entry>(capacity,
-                new Comparator<Entry>() {
-                    @Override
-                    public int compare(Entry o1, Entry o2) {
-                        return o1.getTimestamp() < o2.getTimestamp() ? -1
-                                : (o1.getTimestamp() > o2.getTimestamp() ? 1
-                                        : 0);
-                    }
-                });
+        entryQueue = new PriorityQueue<Entry>(capacity, getComparator());
         entries = new HashMap<NodeID, Entry>((int) (capacity * 1.6));
     }
 
@@ -44,11 +42,7 @@ public class RelationWeightManager {
     }
 
     private void storeNew(Entry entry) {
-        if (entry.getWeight() <= 0)
-            return;
-        // entry が 持っているEntry達よりも古い場合
-        if (entryQueue.peek() != null
-                && entry.getTimestamp() < entryQueue.peek().getTimestamp())
+        if (isIgnoreEntry(entry))
             return;
         while (entries.size() >= capacity) {
             entries.remove(entryQueue.poll().getSender());
@@ -59,7 +53,7 @@ public class RelationWeightManager {
 
     private void updateInfo(Entry entry) {
         val old = entries.get(entry.getSender());
-        val updated = old.update(entry);
+        val updated = updateEntry(old, entry);
         if (!old.equals(updated)) {
             entries.put(entry.getSender(), updated);
         }
@@ -80,5 +74,84 @@ public class RelationWeightManager {
             es.add(e.step());
         }
         return new TellNeighbors(es);
+    }
+
+    public static class Recent extends RelationWeightManager {
+        public Recent(int capacity) {
+            super(capacity);
+        }
+
+        @Override
+        protected Comparator<Entry> getComparator() {
+            return new Comparator<Entry>() {
+                @Override
+                public int compare(Entry o1, Entry o2) {
+                    return o1.getTimestamp() < o2.getTimestamp() ? -1
+                            : (o1.getTimestamp() > o2.getTimestamp() ? 1
+                                    : 0);
+                }
+            };
+        }
+
+        @Override
+        protected boolean isIgnoreEntry(Entry entry) {
+            if (entry.getWeight() <= 0)
+                return true;
+            // entry が 持っているEntry達よりも古い場合
+            if (entryQueue.peek() != null
+                    && entry.getTimestamp() < entryQueue.peek().getTimestamp())
+                return true;
+            return false;
+        }
+
+        @Override
+        protected Entry updateEntry(Entry one, Entry other) {
+            if (one.getSender().equals(other.getSender()) // same sender
+                    && one.getTimestamp() < other.getTimestamp()) { // other is
+                                                                    // newer
+                return other;
+            } else {
+                return one;
+            }
+        }
+    }
+
+    public static class Regular extends RelationWeightManager {
+        public Regular(int capacity) {
+            super(capacity);
+        }
+
+        @Override
+        protected Comparator<Entry> getComparator() {
+            return new Comparator<Message.TellNeighbors.Entry>() {
+                @Override
+                public int compare(Entry o1, Entry o2) {
+                    return o1.getWeight() - o2.getWeight();
+                }
+            };
+        }
+
+        @Override
+        protected boolean isIgnoreEntry(Entry entry) {
+            if (entry.getWeight() <= 0)
+                return true;
+            // entry が 持っているEntry達よりも古い場合
+            if (entryQueue.peek() != null
+                    && entry.getWeight() < entryQueue.peek().getWeight())
+                return true;
+            return false;
+        }
+
+        @Override
+        protected Entry updateEntry(Entry one, Entry other) {
+            if (one.getSender().equals(other.getSender())
+                    && one.getTimestamp() < other.getTimestamp()) {
+                return new Entry(one.getSender(), one.getWeight()
+                        + other.getWeight(), other.getTimestamp());
+            } else {
+                return one;
+            }
+        }
+
     }
 }

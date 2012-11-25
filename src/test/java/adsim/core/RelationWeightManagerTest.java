@@ -20,7 +20,7 @@ public class RelationWeightManagerTest {
 
     @Test
     public void test_update() {
-        val rwm = new RelationWeightManager(10);
+        val rwm = new RelationWeightManager.Recent(10);
         val id = new NodeID();
         val pack1 = createPacket(id, 3, 1);
         val pack2 = createPacket(id, 4, 2);
@@ -31,7 +31,7 @@ public class RelationWeightManagerTest {
 
     @Test
     public void test_ignore() {
-        val rwm = new RelationWeightManager(10);
+        val rwm = new RelationWeightManager.Recent(10);
         val id = new NodeID();
         val pack1 = createPacket(id, 3, 2);
         val pack2 = createPacket(id, 4, 1);
@@ -42,7 +42,7 @@ public class RelationWeightManagerTest {
 
     @Test
     public void test_export() {
-        val rwm = new RelationWeightManager(10);
+        val rwm = new RelationWeightManager.Recent(10);
         val id1 = new NodeID();
         val id2 = new NodeID();
         val pack1 = createPacket(id1, 3, 2);
@@ -63,7 +63,7 @@ public class RelationWeightManagerTest {
 
     @Test
     public void test_collect() {
-        val rwm = new RelationWeightManager(2);
+        val rwm = new RelationWeightManager.Recent(2);
         val id1 = new NodeID();
         val id2 = new NodeID();
         val id3 = new NodeID();

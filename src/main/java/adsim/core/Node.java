@@ -95,7 +95,7 @@ public class Node implements Comparable<Node> {
         this.createdMessages = new ArrayList<Message.Envelope>();
         this.roundPoints = new ArrayList<Vector>();
         this.receivedMessages = new HashSet<Long>();
-        this.weightsMap = new RelationWeightManager(INITIAL_BUFFER_MAX);
+        this.weightsMap = new RelationWeightManager.Recent(INITIAL_BUFFER_MAX);
         this.handler = handler;
     }
 
