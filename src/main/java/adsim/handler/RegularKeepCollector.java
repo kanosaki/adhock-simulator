@@ -31,8 +31,8 @@ public class RegularKeepCollector extends NodeHandlerBase {
             node.sortBuffer(new Comparator<Message.Envelope>() {
                 @Override
                 public int compare(Message.Envelope arg0, Message.Envelope arg1) {
-                    val dst0 = Util.mapGet(accumulator, arg0.getToId(), 0);
-                    val dst1 = Util.mapGet(accumulator, arg1.getToId(), 0);
+                    val dst0 = Util.mapGet(accumulator, arg0.getToId(), -1);
+                    val dst1 = Util.mapGet(accumulator, arg1.getToId(), -1);
                     return dst0 - dst1; // Ascend
                 }
             });

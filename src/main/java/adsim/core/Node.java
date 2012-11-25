@@ -40,6 +40,7 @@ public class Node implements Comparable<Node> {
     private RelationWeightManager weightsMap;
 
     @Getter
+    @Setter
     private int bufferMax;
 
     @Getter
@@ -125,7 +126,7 @@ public class Node implements Comparable<Node> {
     }
 
     public boolean isBufferFilled() {
-        return msgBuffer.size() >= getBufferMax();
+        return msgBuffer.size() > getBufferMax();
     }
 
     public void broadcast(Message msg) {
@@ -263,14 +264,9 @@ public class Node implements Comparable<Node> {
         weightsMap.push(packet);
     }
 
-
     public void next(Session sess) {
         retrieveMessages();
         handler.interval(sess, this);
-    }
-
-    private void setBufferMax(int bufferMax) {
-        this.bufferMax = bufferMax;
     }
 
     public void addFriend(Node newfriend) {
@@ -297,5 +293,9 @@ public class Node implements Comparable<Node> {
             val fmt = String.format("%s: %s", this, format);
             log.debug(String.format(fmt, args));
         }
+    }
+
+    public void injectDevice(Device dev) {
+        this.device = dev;
     }
 }

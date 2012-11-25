@@ -6,6 +6,7 @@ import lombok.experimental.Value;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import adsim.Util;
 
@@ -78,8 +79,8 @@ public abstract class Message {
         @Getter
         private final List<Entry> entries;
 
-        public TellNeighbors(Collection<Entry> entries) {
-            this.entries = new ArrayList<Entry>(entries);
+        public TellNeighbors(List<Entry> entries) {
+            this.entries = entries;
         }
 
         public void add(Entry entry) {
@@ -94,6 +95,12 @@ public abstract class Message {
         @Override
         public int getType() {
             return TYPE_TELLNEIGHBORS;
+        }
+
+        public static TellNeighbors createSingle(NodeID id, int distance) {
+            val entries = new LinkedList<Entry>();
+            entries.add(new Entry(id, distance, new Date().getTime()));
+            return new TellNeighbors(entries);
         }
 
         @Value
