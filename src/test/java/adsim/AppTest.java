@@ -12,7 +12,7 @@ public class AppTest {
 
     @Test
     public void test_ExecParams() {
-        val argLine = "-i foobar.xml -o hogehoge.csv";
+        val argLine = "-i foobar.xml -o hogehoge.csv 50,100,150:1000.0:0,3:fifo,recent,regular:1000:0.01 1";
         val args = argLine.split(" ");
         try {
             val params = new App.ExecParams(args);

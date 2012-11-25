@@ -17,6 +17,7 @@ public class RelationWeightManager {
     private Map<NodeID, Entry> entries;
     private PriorityQueue<Entry> entryQueue;
     private final int capacity;
+    public static final int DEFAULT_WEIGHT = -1;
 
     public RelationWeightManager(int capacity) {
         this.capacity = capacity;
@@ -24,7 +25,9 @@ public class RelationWeightManager {
                 new Comparator<Entry>() {
                     @Override
                     public int compare(Entry o1, Entry o2) {
-                        return o1.getWeight() - o2.getWeight();
+                        return o1.getTimestamp() < o2.getTimestamp() ? -1
+                                : (o1.getTimestamp() > o2.getTimestamp() ? 1
+                                        : 0);
                     }
                 });
         entries = new HashMap<NodeID, Entry>((int) (capacity * 1.6));
@@ -41,11 +44,15 @@ public class RelationWeightManager {
     }
 
     private void storeNew(Entry entry) {
-        while (entries.size() >= capacity) {
-            entries.remove(entryQueue.poll());
-        }
         if (entry.getWeight() <= 0)
             return;
+        // entry が 持っているEntry達よりも古い場合
+        if (entryQueue.peek() != null
+                && entry.getTimestamp() < entryQueue.peek().getTimestamp())
+            return;
+        while (entries.size() >= capacity) {
+            entries.remove(entryQueue.poll().getSender());
+        }
         entries.put(entry.getSender(), entry);
         entryQueue.add(entry);
     }
@@ -61,7 +68,7 @@ public class RelationWeightManager {
     public int get(NodeID id) {
         val entry = entries.get(id);
         if (entry == null) {
-            return 0; // Returns default value
+            return DEFAULT_WEIGHT; // Returns default value
         } else {
             return entry.getWeight();
         }

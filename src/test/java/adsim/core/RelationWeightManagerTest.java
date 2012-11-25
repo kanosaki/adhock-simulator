@@ -61,4 +61,18 @@ public class RelationWeightManagerTest {
         }
     }
 
+    @Test
+    public void test_collect() {
+        val rwm = new RelationWeightManager(2);
+        val id1 = new NodeID();
+        val id2 = new NodeID();
+        val id3 = new NodeID();
+        rwm.push(createPacket(id1, 1, 1));
+        rwm.push(createPacket(id3, 3, 3));
+        rwm.push(createPacket(id2, 2, 2));
+        assertEquals(3, rwm.get(id3));
+        assertEquals(2, rwm.get(id2));
+        assertEquals(RelationWeightManager.DEFAULT_WEIGHT, rwm.get(id1));
+    }
+
 }
