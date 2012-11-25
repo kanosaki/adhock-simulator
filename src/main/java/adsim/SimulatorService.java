@@ -23,21 +23,26 @@ public class SimulatorService {
         return simsrv;
     }
 
-    public static void start(IScenario scenario, boolean visualize) {
+    public static void startAndReport(IScenario scenario, boolean visualize) {
         val simsrv = new SimulatorService();
         simsrv.run(scenario);
         if (visualize)
             simsrv.visualize();
         simsrv.joinFinished();
+        simsrv.report();
     }
 
-    public static void start(IScenario scenario) {
-        SimulatorService.start(scenario, false);
+    public static void startAndReport(IScenario scenario) {
+        SimulatorService.startAndReport(scenario, false);
     }
 
     public Future<?> run(IScenario scenario) {
         sim = new Simulator(scenario);
         return token = sim.start();
+    }
+
+    public void report() {
+        sim.report();
     }
 
     public void joinFinished() {

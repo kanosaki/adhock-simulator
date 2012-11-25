@@ -63,6 +63,9 @@ public class Simulator {
         long elapsedTime = System.currentTimeMillis() - startTime;
         log.info(String.format("Simulator finisied. in %dms(%dsec)",
                 elapsedTime, elapsedTime / 1000));
+    }
+
+    public void report() {
         scenario.report();
     }
 
@@ -75,6 +78,7 @@ public class Simulator {
 
     class Engine implements Runnable {
         List<Future<Object>> fTasks;
+
         public Future<?> start() {
             val tasks = new ArrayList<Callable<Object>>(scenario.getCases()
                     .size());
@@ -102,7 +106,7 @@ public class Simulator {
         @Override
         public void run() {
             try {
-                for(val f : fTasks) {
+                for (val f : fTasks) {
                     f.get();
                 }
             } catch (InterruptedException e) {

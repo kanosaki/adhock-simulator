@@ -33,4 +33,18 @@ public abstract class Param<T> implements Iterable<T> {
             return values.iterator();
         }
     }
+
+    @Override
+    public String toString() {
+        val sb = new StringBuffer();
+        sb.append("[Params:");
+        for (val v : this) {
+            sb.append(" ");
+            sb.append(v.toString());
+            sb.append(",");
+        }
+        sb.deleteCharAt(sb.length() - 1); // remove last ','
+        sb.append("]");
+        return sb.toString();
+    }
 }
