@@ -28,7 +28,8 @@ public abstract class RelationWeightManager {
     public RelationWeightManager(int capacity) {
         this.capacity = capacity;
         entryQueue = new PriorityQueue<Entry>(capacity, getComparator());
-        entries = new HashMap<NodeID, Entry>((int) (capacity * 1.6));
+        // エントリ数が固定なのでLoadFactorは1fです
+        entries = new HashMap<NodeID, Entry>(capacity, 1);
     }
 
     public void push(TellNeighbors packet) {
@@ -48,7 +49,7 @@ public abstract class RelationWeightManager {
             entries.remove(entryQueue.poll().getSender());
         }
         entries.put(entry.getSender(), entry);
-        entryQueue.add(entry);
+        entryQueue.offer(entry);
     }
 
     private void updateInfo(Entry entry) {
@@ -56,6 +57,8 @@ public abstract class RelationWeightManager {
         val updated = updateEntry(old, entry);
         if (!old.equals(updated)) {
             entries.put(entry.getSender(), updated);
+            entryQueue.remove(old);
+            entryQueue.offer(updated);
         }
     }
 
@@ -135,7 +138,6 @@ public abstract class RelationWeightManager {
         protected boolean isIgnoreEntry(Entry entry) {
             if (entry.getWeight() <= 0)
                 return true;
-            // entry が 持っているEntry達よりも古い場合
             if (entryQueue.peek() != null
                     && entry.getWeight() < entryQueue.peek().getWeight())
                 return true;
