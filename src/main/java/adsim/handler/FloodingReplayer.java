@@ -37,7 +37,7 @@ public class FloodingReplayer extends NodeHandlerBase {
         node.getCreatedMessages().clear();
         val buffer = node.getBuffer();
         if (!buffer.isEmpty()) {
-            val nextPointer = (index + 1) % buffer.size();
+            val nextPointer = (index++) % buffer.size();
             node.broadcast(buffer.get(nextPointer));
         }
     }
