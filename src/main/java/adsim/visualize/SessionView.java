@@ -11,6 +11,7 @@ import adsim.core.Device;
 import adsim.core.Field;
 import adsim.core.Node;
 import adsim.core.Session;
+import adsim.core.Simulator;
 import adsim.handler.RoundsMotion;
 import adsim.misc.GraphicsAdapter;
 import adsim.misc.SignalHandler;
@@ -26,24 +27,50 @@ public class SessionView extends JPanel {
 
     }
 
-    public SessionView(Session model) {
-        this.model = model;
+    public SessionView(Simulator sim) {
+        sim.addOnSessionUpdatedHandler(new SignalHandler<Session>() {
+            @Override
+            public void run(Object sender, Session val) {
+                if (model != null && !model.isFinished())
+                    return;
+                scale = 500.0 / val.getField().getSize();
+                purgePrevSession();
+                linkSession(val);
+            }
+        });
         this.watchNodes = new HashSet<Node>();
-        model.setInterval(100);
+    }
+
+    private void updateWatchNodes() {
+        if (model == null)
+            return;
+        // steal verbose flag to prevent long long log output.
+        watchNodes.clear();
+        for (Node node : model.getNodes()) {
+            if (node.isVerbose()) {
+                watchNodes.add(node);
+                node.setVerbose(false);
+            }
+        }
+    }
+
+    private void purgePrevSession() {
+        if (model == null)
+            return;
+        model.setInterval(0);
+        model.clearOnNextHandler();
+    }
+
+    private void linkSession(Session sess) {
+        model = sess;
+        model.setInterval(20);
         model.addOnNextHandler(new SignalHandler<Long>() {
             @Override
             public void run(Object sender, Long val) {
                 repaint();
             }
         });
-        
-        // steal verbose flag to prevent long long log output.
-        for(Node node : model.getNodes()) {
-            if(node.isVerbose()) {
-                watchNodes.add(node);
-                node.setVerbose(false);
-            }
-        }
+        updateWatchNodes();
     }
 
     private Vector fixScale(Vector v) {
@@ -63,7 +90,8 @@ public class SessionView extends JPanel {
             if (watchNodes.contains(node)) {
                 ga.setColor(Color.RED);
                 for (Vector v : node.getRoundPoints()) {
-                    ga.drawCircle(fixScale(v), RoundsMotion.POINT_RADIUS);
+                    ga.drawCircle(fixScale(v), RoundsMotion.POINT_RADIUS
+                            * scale);
                 }
             }
             ga.fillCircle(fixScale(dev.getPosition()), 3);

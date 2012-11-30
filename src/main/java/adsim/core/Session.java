@@ -36,6 +36,9 @@ public class Session {
     private Signal<Long> onNext;
 
     @Getter
+    private boolean finished;
+
+    @Getter
     @Setter
     private int interval;
 
@@ -51,7 +54,7 @@ public class Session {
         this.field = new Field(cas.getFieldSize());
         this.step = 0;
         this.stepLimit = cas.getStepLimit();
-        this.onNext = new Signal.Sync<Long>();
+        this.onNext = new Signal.Async<Long>();
         this.interval = 0;
         stepCheck();
         init();
@@ -113,7 +116,6 @@ public class Session {
     }
 
     public void start() {
-        log.info("Starting session. - ID:" + cas.getId());
         try {
             while (step < stepLimit) {
                 if (onNext.hasHandler())
@@ -127,8 +129,9 @@ public class Session {
                     }
                 }
             }
+            finished = true;
             onCompleted();
-            log.info("Session finished.");
+            log.info("Session finished. ID:" + cas.getId());
         } catch (SessionFinishedException e) {
             log.info("Session aborted.");
         }
@@ -207,6 +210,10 @@ public class Session {
 
     public void addOnNextHandler(SignalHandler<Long> handler) {
         onNext.register(handler);
+    }
+
+    public void clearOnNextHandler() {
+        onNext.clear();
     }
 
 }

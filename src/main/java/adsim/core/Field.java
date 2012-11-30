@@ -11,7 +11,8 @@ public class Field {
     public static final int MAX_SEND_COUNT = 2000;
     private final @Getter
     SpaceMediator space = initSpace();
-    private double size;
+    @Getter
+    private final double size;
     private ArrayList<Device> devices;
 
     private long sentCount;

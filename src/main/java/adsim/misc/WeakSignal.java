@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *            イベントの値
  */
 public class WeakSignal<T> extends Signal<T> {
-    public ArrayList<WeakReference<SignalHandler<T>>> handlers;
+    private ArrayList<WeakReference<SignalHandler<T>>> handlers;
 
     public WeakSignal() {
         this.handlers = new ArrayList<WeakReference<SignalHandler<T>>>();
@@ -45,5 +45,10 @@ public class WeakSignal<T> extends Signal<T> {
     @Override
     public boolean hasHandler() {
         return !handlers.isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        handlers.clear();
     }
 }

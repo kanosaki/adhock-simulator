@@ -13,21 +13,22 @@ public class SimulatorService {
     private Simulator sim;
     private Future<?> token;
 
-    public SimulatorService() {
+    public SimulatorService(IScenario scenario) {
+        sim = new Simulator(scenario);
         LoggingService.initLoggers();
     }
 
     public static SimulatorService startAsync(IScenario scenario) {
-        val simsrv = new SimulatorService();
+        val simsrv = new SimulatorService(scenario);
         simsrv.run(scenario);
         return simsrv;
     }
 
     public static void startAndReport(IScenario scenario, boolean visualize) {
-        val simsrv = new SimulatorService();
-        simsrv.run(scenario);
+        val simsrv = new SimulatorService(scenario);
         if (visualize)
             simsrv.visualize();
+        simsrv.run(scenario);
         simsrv.joinFinished();
         simsrv.report();
     }
@@ -37,7 +38,7 @@ public class SimulatorService {
     }
 
     public Future<?> run(IScenario scenario) {
-        sim = new Simulator(scenario);
+        
         return token = sim.start();
     }
 

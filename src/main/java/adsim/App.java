@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import lombok.*;
 
@@ -35,14 +36,16 @@ public class App {
         ExecParams params;
         Collection<ICase> cases = null;
         if (args.length == 0) {
-            execWithDefault();
+            // execWithDefault();
+            execWithVisualization();
         } else {
             try {
                 params = new ExecParams(args);
                 val scenario = new CompositeScenario(casesByParams(
-                        params.getTryCount(), params.getParams()),
+                        params.getTryCount(), params.getWatchNodesCount(),
+                        params.getParams()),
                         params.getOutput());
-                SimulatorService.startAndReport(scenario, false);
+                SimulatorService.startAndReport(scenario, params.isVisualze());
             } catch (IOException ioe) {
                 System.out.println(ioe.getMessage());
                 System.exit(-1);
@@ -60,19 +63,38 @@ public class App {
         SimulatorService.startAndReport(scenario, false);
     }
 
-    private static Collection<ICase> casesByParams(int tryCount, Param[] params) {
-        return ScenarioBuilder.buildCase(tryCount, params[0], params[1],
+    private static void execWithVisualization() {
+        val cases = visualzeCases();
+        val scenario = new CompositeScenario(cases, System.out);
+        SimulatorService.startAndReport(scenario, true);
+    }
+
+    private static Collection<ICase> casesByParams(int tryCount,
+            int watchCount,
+            Param[] params) {
+        return ScenarioBuilder.buildCase(tryCount, watchCount, params[0],
+                params[1],
                 params[2], params[3], params[4], params[5]);
 
     }
 
-    private static Collection<ICase> defaultCases() {
-        return ScenarioBuilder.buildCase(1,
-                Param.enumerate(100),
+    private static List<ICase> defaultCases() {
+        return ScenarioBuilder.buildCase(1, 0,
+                Param.enumerate(50),
                 Param.enumerate(1000.0), Param.enumerate(3),
                 Param.enumerate(
+                        CollectMode.FIFO, CollectMode.RecentKeep,
                         CollectMode.RegularKeep),
-                Param.enumerate(1000), Param.enumerate(0.01));
+                Param.enumerate(10000), Param.enumerate(0.01));
+    }
+
+    private static List<ICase> visualzeCases() {
+        return ScenarioBuilder.buildCase(1, 1,
+                Param.enumerate(50),
+                Param.enumerate(1000.0), Param.enumerate(3),
+                Param.enumerate(
+                        CollectMode.FIFO),
+                Param.enumerate(10000), Param.enumerate(0.01));
     }
 
     /*
@@ -100,6 +122,8 @@ public class App {
             val opts = new Options();
             opts.addOption("o", true, "Output file name");
             opts.addOption("i", true, "Scenario file");
+            opts.addOption("", "visualize", false, "Show visualizer");
+            opts.addOption("", "watch", true, "Watch node count");
             opts.addOption("format", true, "Output format");
             return opts;
         }
@@ -151,6 +175,15 @@ public class App {
 
         public String getOutputFile() {
             return cl.getOptionValue('o', "result.csv");
+        }
+
+        public boolean isVisualze() {
+            return cl.hasOption("visualize");
+        }
+
+        public int getWatchNodesCount() {
+            return cl.hasOption("watch") ? Integer.parseInt(cl
+                    .getOptionValue("watch")) : 0;
         }
 
         public OutputStream getOutput() throws IOException {

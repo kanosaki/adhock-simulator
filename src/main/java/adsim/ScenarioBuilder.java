@@ -1,8 +1,10 @@
 package adsim;
 
 import lombok.*;
+
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import adsim.core.Case;
 import adsim.core.CaseBuilder;
@@ -12,7 +14,7 @@ import adsim.core.Case.CollectMode;
 import adsim.misc.Param;
 
 public class ScenarioBuilder {
-    public static Collection<ICase> buildCase(int tryPerCase,
+    public static List<ICase> buildCase(int tryPerCase, int watchCount,
             Param<Integer> nodeNums,
             Param<Double> fieldSizes, Param<Integer> spreadStepNums,
             Param<CollectMode> modes, Param<Integer> stepLimits,
@@ -26,9 +28,12 @@ public class ScenarioBuilder {
                         for (val stepLimit : stepLimits) {
                             for (val publishPerStep : publishPerSteps) {
                                 for (int inTypeID = 0; inTypeID < tryPerCase; inTypeID++) {
-                                    ret.add(new Case(id, inTypeID, nodeCount, fieldSize,
+                                    val cas = new Case(id, inTypeID, nodeCount,
+                                            fieldSize,
                                             spreadStepNum, mode, stepLimit,
-                                            publishPerStep));
+                                            publishPerStep);
+                                    cas.setWatchNodeCount(watchCount);
+                                    ret.add(cas);
                                     id += 1;
                                 }
                             }

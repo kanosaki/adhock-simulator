@@ -20,6 +20,8 @@ public abstract class Signal<V> {
 
     public abstract boolean hasHandler();
 
+    public abstract void clear();
+
     protected void dispatch(Object sender, SignalHandler<V> handler, V arg) {
         handler.run(sender, arg);
     }
@@ -57,6 +59,11 @@ public abstract class Signal<V> {
         public boolean hasHandler() {
             return !handlers.isEmpty();
         }
+
+        public void clear() {
+            handlers.clear();
+        }
+
     }
 
     public static class Async<V> extends Sync<V> {

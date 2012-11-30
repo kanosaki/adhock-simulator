@@ -14,27 +14,24 @@ public class RoundsMotion extends NodeHandlerBase {
     public static final String SIGNAL_ARRIVE_POINT = "RoundsMotion/ArrivePoint";
     public static final double POINT_RADIUS = 10;
 
+    private int waitCount;
+
     @Override
     public void initialize(Node node) {
-       
+
     }
 
     private void updateDestination(Session sess, Node node) {
-        double distanceToDestination = node.getCurrentDestination().distance(
-                node.getLocation());
-        // 目標地点に着いていると判定できる場合は、目的地を次の地点へ変更します
-        if (distanceToDestination < POINT_RADIUS) {
-            Vector nextPoint = Util.randomSelectExcept(node.getRoundPoints(),
-                    node.getCurrentDestination());
-            node.setCurrentDestination(nextPoint);
-        }
+        Vector nextPoint = Util.randomSelectExcept(node.getRoundPoints(),
+                node.getCurrentDestination());
+        node.setCurrentDestination(nextPoint);
     }
 
-    @Override
-    public void interval(Session sess, Node node) {
-        if (node.getRoundPoints().size() < 2)
-            return;
-        updateDestination(sess, node);
+    private void setRandomWait(Session sess, Node node) {
+        waitCount = (int) Util.getReflexiveGaussianPoint(300, 200, 0, 600);
+    }
+
+    private void moveAction(Session sess, Node node) {
         // 現在地から目的地までのベクトルを求めます
         Vector directVect = node.getCurrentDestination()
                 .sub(node.getLocation());
@@ -51,12 +48,33 @@ public class RoundsMotion extends NodeHandlerBase {
     }
 
     @Override
+    public void interval(Session sess, Node node) {
+        if (node.getRoundPoints().size() < 2)
+            return;
+
+        if (waitCount > 0) {
+            waitCount -= 1;
+            return;
+        }
+
+        double distanceToDestination = node.getCurrentDestination().distance(
+                node.getLocation());
+        // 目標地点に着いていると判定できる場合は、目的地を次の地点へ変更します
+        if (distanceToDestination < POINT_RADIUS) {
+            updateDestination(sess, node);
+            setRandomWait(sess, node);
+        } else {
+            moveAction(sess, node);
+        }
+    }
+
+    @Override
     public void onReceived(Node self, Message packet) {
 
     }
 
     public INodeHandler clone() {
-        return this;
+        return new RoundsMotion();
     }
 
 }

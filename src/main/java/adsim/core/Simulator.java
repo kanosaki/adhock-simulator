@@ -13,6 +13,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import adsim.ScenarioBuilder;
+import adsim.misc.Signal;
+import adsim.misc.SignalHandler;
+
 /**
  * ISimulator implementation.
  * 
@@ -27,8 +31,21 @@ public class Simulator {
 
     private long startTime;
 
-    @Getter
-    private Session currentSession;
+    private Signal<Session> onSessionUpdatedSignal;
+
+    protected void onSessionUpdated(Session sess) {
+        if (onSessionUpdatedSignal != null) {
+            onSessionUpdatedSignal.fire(this, sess);
+        }
+    }
+
+    public void addOnSessionUpdatedHandler(SignalHandler<Session> handler) {
+        if (handler == null)
+            throw new IllegalArgumentException();
+        if (onSessionUpdatedSignal == null)
+            onSessionUpdatedSignal = new Signal.Sync<Session>();
+        onSessionUpdatedSignal.register(handler);
+    }
 
     // Threadpool for Engine
     private static ExecutorService threadpool = Executors.newFixedThreadPool(4);
@@ -82,11 +99,19 @@ public class Simulator {
         public Future<?> start() {
             val tasks = new ArrayList<Callable<Object>>(scenario.getCases()
                     .size());
+            val allCaseCount = scenario.getCases().size();
             for (val cas : scenario.getCases()) {
                 tasks.add(new Callable<Object>() {
                     @Override
                     public Object call() {
                         val session = new Session(cas);
+                        log.info(
+                                String.format(
+                                        "Starting Session %d of %d (%.2f%% Complete)",
+                                        cas.getId() + 1,
+                                        allCaseCount,
+                                        ((double) (cas.getId()) / (double) allCaseCount) * 100.0));
+                        onSessionUpdated(session);
                         session.start();
                         return null;
                     }

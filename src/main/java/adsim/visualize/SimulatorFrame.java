@@ -19,13 +19,13 @@ public class SimulatorFrame extends JFrame {
      */
     public SimulatorFrame(Simulator model) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
+        setBounds(100, 100, 800, 600);
         _contentPane = new JPanel();
         _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         _contentPane.setLayout(new BorderLayout(0, 0));
         setContentPane(_contentPane);
-        
-        SessionView sessionView = new SessionView(model.getCurrentSession());
+
+        SessionView sessionView = new SessionView(model);
         _contentPane.add(sessionView, BorderLayout.CENTER);
     }
 
