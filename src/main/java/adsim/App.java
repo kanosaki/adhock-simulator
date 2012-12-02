@@ -36,8 +36,8 @@ public class App {
         ExecParams params;
         Collection<ICase> cases = null;
         if (args.length == 0) {
-            // execWithDefault();
-            execWithVisualization();
+            execWithDefault();
+            // execWithVisualization();
         } else {
             try {
                 params = new ExecParams(args);
