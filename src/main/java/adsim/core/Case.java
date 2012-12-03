@@ -48,14 +48,17 @@ public class Case implements ICase {
     @Setter
     private int watchNodeCount;
 
+    private int nodesCount;
+    private INodeHandler nodeHandler;
+
     private ArrayList<Node> nodes;
     private final LinkedBlockingQueue<Object[]> result;
 
     public Case() {
-        nodes = new ArrayList<Node>();
         result = new LinkedBlockingQueue<Object[]>();
         spreadStep = 0;
         collectMode = CollectMode.FIFO;
+        nodesCount = 50;
         this.fieldSize = 1000;
     }
 
@@ -69,6 +72,7 @@ public class Case implements ICase {
         this.fieldSize = fieldSize;
         this.spreadStep = spreadStep;
         this.collectMode = collectMode;
+        this.nodesCount = nodesCount;
         // build handlers
         val handlers = new ArrayList<INodeHandler>();
         handlers.add(new RoundsMotion());
@@ -78,23 +82,29 @@ public class Case implements ICase {
         handlers.add(collectMode.toHandler());
         handlers.add(new FloodingReplayer());
         handlers.add(new IntervalPublisher(publishPerStep));
-        val handler = new CompositeNodeHandler(handlers).prune();
-        this.nodes = new ArrayList<Node>(nodesCount);
-        for (int i = 0; i < nodesCount; i++) {
-            this.nodes.add(new Node(handler.clone()));
-        }
+        this.nodeHandler = new CompositeNodeHandler(handlers).prune();
     }
 
     @Override
     public List<Node> getNodes() {
+        if (nodes == null) {
+            nodes = new ArrayList<Node>(nodesCount);
+            for (int i = 0; i < nodesCount; i++) {
+                nodes.add(new Node(nodeHandler.clone()));
+            }
+        }
         return nodes;
     }
 
     public void addNode(Node node) {
+        if (nodes == null)
+            nodes = new ArrayList<Node>();
         nodes.add(node);
     }
 
     public void addNodes(Collection<Node> nodes2) {
+        if (nodes == null)
+            nodes = new ArrayList<Node>();
         nodes.addAll(nodes2);
     }
 
@@ -104,10 +114,10 @@ public class Case implements ICase {
             result.put(new Object[] {
                     id,
                     tryId,
-                    nodes.size(),
+                    nodesCount,
                     fieldSize,
                     collectMode,
-                    spreadStep, 
+                    spreadStep,
                     stepLimit,
                     report.getMessagesCreatedCount(),
                     report.getMessagesAcceptedCount(),
@@ -124,7 +134,7 @@ public class Case implements ICase {
     public String toString() {
         return String.format(
                 "[Case Node: %d, Field: %f, Mode: %s, Spread: %d]",
-                nodes.size(), fieldSize, collectMode, spreadStep);
+                nodesCount, fieldSize, collectMode, spreadStep);
     }
 
     @Override

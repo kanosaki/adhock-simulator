@@ -57,7 +57,6 @@ public class Session {
         this.onNext = new Signal.Async<Long>();
         this.interval = 0;
         stepCheck();
-        init();
         log.debug("Session for " + cas.toString() + " initialized");
     }
 
@@ -116,6 +115,7 @@ public class Session {
     }
 
     public void start() {
+        init();
         try {
             while (step < stepLimit) {
                 if (onNext.hasHandler())
