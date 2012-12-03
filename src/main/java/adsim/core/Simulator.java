@@ -105,6 +105,7 @@ public class Simulator {
                     @Override
                     public Object call() {
                         val session = new Session(cas);
+                        session.init();
                         log.info(
                                 String.format(
                                         "Starting Session %d of %d (%.2f%% Complete)",

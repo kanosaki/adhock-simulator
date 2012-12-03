@@ -60,7 +60,7 @@ public class Session {
         log.debug("Session for " + cas.toString() + " initialized");
     }
 
-    private void init() {
+    public void init() {
         for (val node : getNodes()) {
             node.setSession(this);
         }
@@ -115,7 +115,6 @@ public class Session {
     }
 
     public void start() {
-        init();
         try {
             while (step < stepLimit) {
                 if (onNext.hasHandler())
