@@ -82,8 +82,8 @@ public class Field {
         return disposedCount;
     }
 
-    public long getWholeSentCount() {
-        return sentCount;
+    public long getWholePacketCount() {
+        return sentCount + disposedCount;
     }
 
 }

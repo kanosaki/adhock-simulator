@@ -141,7 +141,7 @@ public class Session {
                 createdMessagesCount, ((double) reachedMessagesCount) * 100
                         / ((double) createdMessagesCount)));
         cas.tellResult(new ResultReport(createdMessagesCount,
-                reachedMessagesCount, field.getWholeSentCount(), field
+                reachedMessagesCount, field.getWholePacketCount(), field
                         .getWholeDisposedCount()));
         field = null;
     }
