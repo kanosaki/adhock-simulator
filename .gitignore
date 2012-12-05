@@ -1,5 +1,7 @@
 target/
+results/
 .settings/
 adsim/adsim.jar
 adsim.zip
+history
 result.csv
