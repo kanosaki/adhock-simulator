@@ -13,8 +13,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import adsim.handler.FIFOCollector;
 import adsim.handler.FloodingReplayer;
+import adsim.handler.GatherMotion;
 import adsim.handler.InfoSpreader;
 import adsim.handler.IntervalPublisher;
+import adsim.handler.RandomWalk;
 import adsim.handler.RecentKeepCollector;
 import adsim.handler.RegularKeepCollector;
 import adsim.handler.RoundsMotion;
@@ -75,7 +77,7 @@ public class Case implements ICase {
         this.nodesCount = nodesCount;
         // build handlers
         val handlers = new ArrayList<INodeHandler>();
-        handlers.add(new RoundsMotion());
+        handlers.add(new GatherMotion());
         if (spreadStep > 0) {
             handlers.add(new InfoSpreader(spreadStep));
         }

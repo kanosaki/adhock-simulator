@@ -75,6 +75,7 @@ public class Vector {
     }
 
     public static final Vector zero = new Vector(0, 0);
+    public static final Vector unit = new Vector(1, 1);
 
     @Override
     public boolean equals(Object obj) {
@@ -104,4 +105,25 @@ public class Vector {
         return result;
     }
 
+    public Vector checkBound(double xMin, double xMax, double yMin, double yMax) {
+        double newx = x, newy = y;
+        if (x < xMin) {
+            newx = xMin + Math.abs(xMin - x);
+        }
+        if (x > xMax) {
+            newx = xMax - Math.abs(x - xMax);
+        }
+        if (y < yMin) {
+            newy = yMin + Math.abs(yMin - y);
+        }
+        if (y > yMax) {
+            newy = yMax - Math.abs(yMax - y);
+        }
+
+        if (newx == x && newy == y) {
+            return this;
+        } else {
+            return new Vector(newx, newy);
+        }
+    }
 }

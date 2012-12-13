@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -42,6 +43,8 @@ public class Session {
     @Setter
     private int interval;
 
+    private LinkedList<RoundPoint> roundPoints;
+
     public List<Node> getNodes() {
         return cas.getNodes();
     }
@@ -55,6 +58,7 @@ public class Session {
         this.step = 0;
         this.stepLimit = cas.getStepLimit();
         this.onNext = new Signal.Async<Long>();
+        this.roundPoints = new LinkedList<RoundPoint>();
         this.interval = 0;
         stepCheck();
         log.debug("Session for " + cas.toString() + " initialized");
@@ -100,6 +104,9 @@ public class Session {
     public void next() {
         step += 1;
         printProgress();
+        for (val point : roundPoints) {
+            point.next();
+        }
         for (val node : cas.getNodes()) {
             node.next(this);
         }
@@ -170,23 +177,30 @@ public class Session {
         }
     }
 
+    private RoundPoint createRandomRoundPoint() {
+        val point = Util.createRandomPoint(cas.getFieldSize());
+        val interval = (int) Util.getReflexiveGaussianPoint(400, 100, 200, 600);
+        return new RoundPoint(point, interval);
+    }
+
     private void registerRoundPoints() {
         int groupHop = 1;
         long pointCount = getNodes().size() / 2;
         for (int i = 0; i < pointCount; i++) {
             val centerNodes = Util.randomSelect(getNodes());
-            val point = Util.createRandomPoint(cas.getFieldSize());
+            val point = createRandomRoundPoint();
+            roundPoints.add(point);
             recAppendRoundPoint(centerNodes, point, groupHop,
                     new TreeSet<Node>());
         }
         for (val node : getNodes()) {
             if (node.getRoundPoints().isEmpty()) {
-                node.addRoundPoint(Util.createRandomPoint(cas.getFieldSize()));
+                node.addRoundPoint(createRandomRoundPoint());
             }
         }
     }
 
-    private void recAppendRoundPoint(Node tgt, Vector point, int recRemain,
+    private void recAppendRoundPoint(Node tgt, RoundPoint point, int recRemain,
             Set<Node> visited) {
         if (recRemain == 0 || visited.contains(tgt))
             return;

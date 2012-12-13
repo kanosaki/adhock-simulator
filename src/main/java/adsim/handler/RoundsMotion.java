@@ -7,6 +7,7 @@ import adsim.Util;
 import adsim.core.INodeHandler;
 import adsim.core.Message;
 import adsim.core.Node;
+import adsim.core.RoundPoint;
 import adsim.core.Session;
 import adsim.misc.Vector;
 
@@ -22,7 +23,7 @@ public class RoundsMotion extends NodeHandlerBase {
     }
 
     private void updateDestination(Session sess, Node node) {
-        Vector nextPoint = Util.randomSelectExcept(node.getRoundPoints(),
+        RoundPoint nextPoint = Util.randomSelectExcept(node.getRoundPoints(),
                 node.getCurrentDestination());
         node.setCurrentDestination(nextPoint);
     }
@@ -33,7 +34,7 @@ public class RoundsMotion extends NodeHandlerBase {
 
     private void moveAction(Session sess, Node node) {
         // 現在地から目的地までのベクトルを求めます
-        Vector directVect = node.getCurrentDestination()
+        Vector directVect = node.getCurrentDestination().getPoint()
                 .sub(node.getLocation());
         // 求めたベクトルがゼロ、つまり、現在地と目的地が一致している場合は何もしません
         if (directVect.equals(Vector.zero))
@@ -57,8 +58,9 @@ public class RoundsMotion extends NodeHandlerBase {
             return;
         }
 
-        double distanceToDestination = node.getCurrentDestination().distance(
-                node.getLocation());
+        double distanceToDestination = node.getCurrentDestination().getPoint()
+                .distance(
+                        node.getLocation());
         // 目標地点に着いていると判定できる場合は、目的地を次の地点へ変更します
         if (distanceToDestination < POINT_RADIUS) {
             updateDestination(sess, node);

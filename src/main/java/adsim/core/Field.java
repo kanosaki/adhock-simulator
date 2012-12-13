@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import adsim.misc.Vector;
+
 import lombok.*;
 
 public class Field {
@@ -45,6 +47,9 @@ public class Field {
     }
 
     public void next() {
+        for (val dev : getDevices()) {
+            dev.correctPosition(getSize());
+        }
         this.dispathPackets();
     }
 
@@ -57,14 +62,14 @@ public class Field {
                 if (request != null) {
                     space.dispatch(dev, request);
                     sentCount += 1;
-                    sent += 1;
+                    // sent += 1;
                     anyoneSent = true;
                     if (sent >= MAX_SEND_COUNT) {
                         break;
                     }
                 }
             }
-            if(!anyoneSent) {
+            if (!anyoneSent) {
                 break;
             }
         }

@@ -21,9 +21,17 @@ public class IntervalPublisher extends NodeHandlerBase {
 
     }
 
+    private Node recRandomSelect(Node pivot, int depth) {
+        if (depth == 0)
+            return pivot;
+        else
+            return recRandomSelect(Util.randomSelect(pivot.getFriends()),
+                    depth - 1);
+    }
+
     private void pushNext(Node node) {
-        val destNode = Util.randomSelect(node.getFriends());
-        val msg = node.createMessage(destNode);
+        val dstNode = recRandomSelect(node, 2);
+        val msg = node.createMessage(dstNode);
         node.broadcast(msg);
     }
 

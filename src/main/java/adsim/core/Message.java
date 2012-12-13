@@ -53,14 +53,28 @@ public abstract class Message {
         return true;
     }
 
-    @Value
     public static class Envelope extends Message {
+        @Getter
         private final NodeID fromId;
+        @Getter
         private final NodeID toId;
+        private final LinkedList<Node> path;
 
         public Envelope(NodeID from, NodeID to) {
             fromId = from;
             toId = to;
+            path = new LinkedList<Node>();
+        }
+
+        public void addPath(Node node) {
+            path.add(node);
+        }
+
+        public void printPath() {
+            System.out.format("------ PATH for %s -------\n", this);
+            for (val node : path) {
+                System.out.println(node.getId());
+            }
         }
 
         @Override

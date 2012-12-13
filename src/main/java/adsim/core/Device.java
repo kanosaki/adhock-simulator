@@ -67,4 +67,8 @@ public class Device {
         sendQueue.clear();
         return overflowPackets;
     }
+
+    public void correctPosition(double size) {
+        setPosition(getPosition().checkBound(0, size, 0, size));
+    }
 }

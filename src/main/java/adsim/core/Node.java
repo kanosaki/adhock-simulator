@@ -20,8 +20,8 @@ import adsim.misc.Vector;
 
 @Slf4j
 public class Node implements Comparable<Node> {
-    public static final int INITIAL_BUFFER_MAX = 100;
-    public static final int WEIGHT_BUFFER_MAX = 100;
+    public static final int INITIAL_BUFFER_MAX = 50;
+    public static final int WEIGHT_BUFFER_MAX = 50;
 
     // -- Signals --
     public static final String SIGNAL_COLLECT_BUFFER = "Node/RequestCollectBuffer";
@@ -55,11 +55,11 @@ public class Node implements Comparable<Node> {
     private ArrayList<Node> friends;
 
     @Getter
-    private ArrayList<Vector> roundPoints;
+    private ArrayList<RoundPoint> roundPoints;
 
     @Getter
     @Setter
-    private Vector currentDestination;
+    private RoundPoint currentDestination;
 
     private HashSet<Long> receivedMessages;
 
@@ -93,7 +93,7 @@ public class Node implements Comparable<Node> {
         this.msgBuffer = new ArrayList<Message.Envelope>();
         this.friends = new ArrayList<Node>();
         this.createdMessages = new ArrayList<Message.Envelope>();
-        this.roundPoints = new ArrayList<Vector>();
+        this.roundPoints = new ArrayList<RoundPoint>();
         this.receivedMessages = new HashSet<Long>();
         this.weightsMap = new RelationWeightManager.Recent(INITIAL_BUFFER_MAX);
         this.handler = handler;
@@ -109,7 +109,7 @@ public class Node implements Comparable<Node> {
 
     private void initLocation() {
         val initPoint = Util.randomSelect(getRoundPoints());
-        jump(initPoint);
+        jump(initPoint.getPoint());
         if (getRoundPoints().size() >= 2) {
             setCurrentDestination(Util.randomSelectExcept(
                     getRoundPoints(), initPoint));
@@ -221,6 +221,10 @@ public class Node implements Comparable<Node> {
         Collections.sort(msgBuffer, sortComparator);
     }
 
+    public void sortRoundPoints(Comparator<RoundPoint> comparator) {
+        Collections.sort(roundPoints, comparator);
+    }
+
     // --- interface for handlers END ---
     // ----------------------------------
 
@@ -252,6 +256,7 @@ public class Node implements Comparable<Node> {
 
     private void handleEnvelope(Message.Envelope envelope) {
         debug("RecvEnvelope", envelope);
+        envelope.addPath(this);
         if (envelope.getToId().equals(id)) {
             debug("AcceptEnvelope %s", envelope);
             session.onMessageAccepted(this, envelope);
@@ -274,7 +279,7 @@ public class Node implements Comparable<Node> {
             friends.add(newfriend);
     }
 
-    public void addRoundPoint(Vector point) {
+    public void addRoundPoint(RoundPoint point) {
         roundPoints.add(point);
     }
 

@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import adsim.core.Device;
 import adsim.core.Field;
 import adsim.core.Node;
+import adsim.core.RoundPoint;
 import adsim.core.Session;
 import adsim.core.Simulator;
 import adsim.handler.RoundsMotion;
@@ -89,8 +90,8 @@ public class SessionView extends JPanel {
             Device dev = node.getDevice();
             if (watchNodes.contains(node)) {
                 ga.setColor(Color.RED);
-                for (Vector v : node.getRoundPoints()) {
-                    ga.drawCircle(fixScale(v), RoundsMotion.POINT_RADIUS
+                for (RoundPoint v : node.getRoundPoints()) {
+                    ga.drawCircle(fixScale(v.getPoint()), RoundsMotion.POINT_RADIUS
                             * scale);
                 }
             }
