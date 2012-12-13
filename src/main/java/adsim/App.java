@@ -20,6 +20,7 @@ import org.apache.commons.cli.PosixParser;
 
 import adsim.core.Case;
 import adsim.core.Case.CollectMode;
+import adsim.core.Case.Motion;
 import adsim.core.CompositeScenario;
 import adsim.core.ICase;
 import adsim.misc.Param;
@@ -74,7 +75,7 @@ public class App {
             Param[] params) {
         return ScenarioBuilder.buildCase(tryCount, watchCount, params[0],
                 params[1],
-                params[2], params[3], params[4], params[5]);
+                params[2], params[3], params[4], params[5], params[6]);
 
     }
 
@@ -84,7 +85,9 @@ public class App {
                 Param.enumerate(1000.0), Param.enumerate(3),
                 Param.enumerate(
                         CollectMode.FIFO, CollectMode.RecentKeep,
-                        CollectMode.RegularKeep),
+                        CollectMode.RegularKeep), Param.enumerate(
+                        Motion.GatherMotion, Motion.RoundMotion,
+                        Motion.RandomWalk),
                 Param.enumerate(10000), Param.enumerate(0.01));
     }
 
@@ -94,6 +97,7 @@ public class App {
                 Param.enumerate(1000.0), Param.enumerate(3),
                 Param.enumerate(
                         CollectMode.FIFO),
+                Param.enumerate(Motion.RoundMotion),
                 Param.enumerate(10000), Param.enumerate(0.01));
     }
 
@@ -137,6 +141,12 @@ public class App {
                     ret.add(CollectMode.RecentKeep);
                 } else if (expr.equalsIgnoreCase("regular")) {
                     ret.add(CollectMode.RegularKeep);
+                } else if (expr.equalsIgnoreCase("round")) {
+                    ret.add(Motion.RoundMotion);
+                } else if (expr.equalsIgnoreCase("gather")) {
+                    ret.add(Motion.GatherMotion);
+                } else if (expr.equalsIgnoreCase("random")) {
+                    ret.add(Motion.RandomWalk);
                 } else {
                     try {
                         ret.add(Integer.parseInt(expr));

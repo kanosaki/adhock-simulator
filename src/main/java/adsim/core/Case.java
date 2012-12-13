@@ -47,6 +47,9 @@ public class Case implements ICase {
     private CollectMode collectMode;
 
     @Getter
+    private Motion motion;
+
+    @Getter
     @Setter
     private int watchNodeCount;
 
@@ -66,7 +69,8 @@ public class Case implements ICase {
 
     public Case(int id, int inTypeId, int nodesCount, double fieldSize,
             int spreadStep,
-            CollectMode collectMode, int stepLimit, double publishPerStep) {
+            CollectMode collectMode, Motion motion, int stepLimit,
+            double publishPerStep) {
         this();
         this.id = id;
         this.tryId = inTypeId;
@@ -74,10 +78,11 @@ public class Case implements ICase {
         this.fieldSize = fieldSize;
         this.spreadStep = spreadStep;
         this.collectMode = collectMode;
+        this.motion = motion;
         this.nodesCount = nodesCount;
         // build handlers
         val handlers = new ArrayList<INodeHandler>();
-        handlers.add(new GatherMotion());
+        handlers.add(motion.toHandler());
         if (spreadStep > 0) {
             handlers.add(new InfoSpreader(spreadStep));
         }
@@ -119,6 +124,7 @@ public class Case implements ICase {
                     nodesCount,
                     fieldSize,
                     collectMode,
+                    motion,
                     spreadStep,
                     stepLimit,
                     report.getMessagesCreatedCount(),
@@ -134,9 +140,10 @@ public class Case implements ICase {
 
     @Override
     public String toString() {
-        return String.format(
-                "[Case Node: %d, Field: %f, Mode: %s, Spread: %d]",
-                nodesCount, fieldSize, collectMode, spreadStep);
+        return String
+                .format(
+                        "[Case Node: %d, Field: %f, Collect: %s, Motion: %s, Spread: %d]",
+                        nodesCount, fieldSize, collectMode, motion, spreadStep);
     }
 
     @Override
@@ -149,6 +156,22 @@ public class Case implements ICase {
         });
         f.run();
         return f;
+    }
+
+    public static enum Motion {
+        RoundMotion, GatherMotion, RandomWalk;
+        public INodeHandler toHandler() {
+            switch (this) {
+            case GatherMotion:
+                return new GatherMotion();
+            case RoundMotion:
+                return new RoundsMotion();
+            case RandomWalk:
+                return new RandomWalk();
+            default:
+                throw new IllegalStateException();
+            }
+        }
     }
 
     public static enum CollectMode {
