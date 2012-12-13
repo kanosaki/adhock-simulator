@@ -14,7 +14,7 @@ public class RelationWeightManagerTest {
 
     public TellNeighbors createPacket(NodeID id, int weight, long timestamp) {
         val entries = new LinkedList<TellNeighbors.Entry>();
-        entries.add(new Entry(id, weight, timestamp));
+        entries.add(new Entry(id, weight, new LinkedList<Long>(), timestamp));
         return new TellNeighbors(entries);
     }
 

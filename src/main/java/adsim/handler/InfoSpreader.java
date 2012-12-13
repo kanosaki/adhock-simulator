@@ -22,7 +22,7 @@ public class InfoSpreader extends NodeHandlerBase {
     @Override
     public void interval(Session sess, Node node) {
         val packet = (TellNeighbors)node.getWeightsMap().export(node);
-        packet.add(node.getId(), depth);
+        packet.add(node.getId(), depth, node.getRecentReceived());
         node.broadcast(packet);
     }
 

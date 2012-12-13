@@ -22,6 +22,7 @@ import adsim.misc.Vector;
 public class Node implements Comparable<Node> {
     public static final int INITIAL_BUFFER_MAX = 50;
     public static final int WEIGHT_BUFFER_MAX = 50;
+    public static final int RECEIVE_HISTORY_BUFFER_MAX = 50;
 
     // -- Signals --
     public static final String SIGNAL_COLLECT_BUFFER = "Node/RequestCollectBuffer";
@@ -58,10 +59,13 @@ public class Node implements Comparable<Node> {
     private ArrayList<RoundPoint> roundPoints;
 
     @Getter
+    private ArrayList<Long> receivedEnvelopeHistory;
+
+    @Getter
     @Setter
     private RoundPoint currentDestination;
 
-    private HashSet<Long> receivedMessages;
+    private HashSet<Long> receivedPackets;
 
     @Getter
     @Setter
@@ -94,7 +98,8 @@ public class Node implements Comparable<Node> {
         this.friends = new ArrayList<Node>();
         this.createdMessages = new ArrayList<Message.Envelope>();
         this.roundPoints = new ArrayList<RoundPoint>();
-        this.receivedMessages = new HashSet<Long>();
+        this.receivedEnvelopeHistory = new ArrayList<Long>();
+        this.receivedPackets = new HashSet<Long>();
         this.weightsMap = new RelationWeightManager.Recent(INITIAL_BUFFER_MAX);
         this.handler = handler;
     }
@@ -235,10 +240,10 @@ public class Node implements Comparable<Node> {
         Message msg = null;
         while ((msg = device.recv()) != null) {
             // receivedMessagesにすでに存在する場合は、重なって受信してるので無視します
-            if (receivedMessages.contains(msg.getId())) {
+            if (receivedPackets.contains(msg.getId())) {
                 continue;
             }
-            receivedMessages.add(msg.getId());
+            receivedPackets.add(msg.getId());
             handler.onReceived(this, msg);
             switch (msg.getType()) {
             case Message.TYPE_ENVELOPE:
@@ -259,6 +264,7 @@ public class Node implements Comparable<Node> {
         envelope.addPath(this);
         if (envelope.getToId().equals(id)) {
             debug("AcceptEnvelope %s", envelope);
+            receivedEnvelopeHistory.add(envelope.getId());
             session.onMessageAccepted(this, envelope);
         }
         msgBuffer.add(envelope);
@@ -302,5 +308,9 @@ public class Node implements Comparable<Node> {
 
     public void injectDevice(Device dev) {
         this.device = dev;
+    }
+
+    public List<Long> getRecentReceived() {
+        return new ArrayList<Long>(receivedEnvelopeHistory);
     }
 }

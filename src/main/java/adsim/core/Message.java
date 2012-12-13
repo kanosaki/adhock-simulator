@@ -101,8 +101,9 @@ public abstract class Message {
             entries.add(entry);
         }
 
-        public void add(NodeID id, int distance) {
-            val entry = new Entry(id, distance, new Date().getTime());
+        public void add(NodeID id, int distance, List<Long> receivedEnvelopes) {
+            val entry = new Entry(id, distance, receivedEnvelopes,
+                    new Date().getTime());
             entries.add(entry);
         }
 
@@ -113,7 +114,8 @@ public abstract class Message {
 
         public static TellNeighbors createSingle(NodeID id, int distance) {
             val entries = new LinkedList<Entry>();
-            entries.add(new Entry(id, distance, new Date().getTime()));
+            entries.add(new Entry(id, distance, new LinkedList<Long>(),
+                    new Date().getTime()));
             return new TellNeighbors(entries);
         }
 
@@ -121,10 +123,12 @@ public abstract class Message {
         public static class Entry {
             private final NodeID sender;
             private final int weight;
+            private final List<Long> receivedEnvelopes;
             private final long timestamp;
 
             public Entry step() {
-                return new Entry(sender, weight - 1, timestamp);
+                return new Entry(sender, weight - 1, receivedEnvelopes,
+                        timestamp);
             }
 
             public Entry update(Entry other) {

@@ -156,7 +156,8 @@ public abstract class RelationWeightManager {
             if (one.getSender().equals(other.getSender())
                     && one.getTimestamp() < other.getTimestamp()) {
                 return new Entry(one.getSender(), one.getWeight()
-                        + other.getWeight(), other.getTimestamp());
+                        + other.getWeight(), other.getReceivedEnvelopes(),
+                        other.getTimestamp());
             } else {
                 return one;
             }
