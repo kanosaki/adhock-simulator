@@ -129,7 +129,14 @@ public abstract class RelationWeightManager {
             return new Comparator<Message.TellNeighbors.Entry>() {
                 @Override
                 public int compare(Entry o1, Entry o2) {
-                    return o1.getWeight() - o2.getWeight();
+                    val weightdiff = o1.getWeight() - o2.getWeight();
+                    if (weightdiff == 0) {
+                        return o1.getTimestamp() < o2.getTimestamp() ? -1
+                                : (o1.getTimestamp() > o2.getTimestamp() ? 1
+                                        : 0);
+                    } else {
+                        return weightdiff;
+                    }
                 }
             };
         }
